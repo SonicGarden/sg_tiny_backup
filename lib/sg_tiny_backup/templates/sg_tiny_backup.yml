@@ -1,0 +1,23 @@
+s3:
+  # Destination url is `s3://{BUCKET}/{PREFIX}{TIMESTAMP}.sql.gz.enc`.
+  bucket: YOUR_S3_BUCKET_NAME
+  prefix: backup/database_
+  access_key_id: <%= ENV.fetch('AWS_ACCESS_KEY_ID') %>
+  secret_access_key: <%= ENV.fetch('AWS_SECRET_ACCESS_KEY') %>
+  # If your backup file size exceeds 50GB, you must specify `expected_upload_size`.
+  # It must be larger than your backup file size.
+  # It is passed to `aws s3 cp`'s `--expected-size` option.
+  # See https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
+  #
+  # It is used for the calculation of S3 multipart upload chunk size not to exceed the part number limit.
+  # See https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
+  #
+  # expected_upload_size: 100000000000
+# You can generate ENCRYPTION_KEY with `bundle exec rails secret`.
+encryption_key: <%= ENV.fetch('ENCRYPTION_KEY') %>
+# The following settings is not required since database config can be loaded from config/database.yml in typical rails application.
+# db:
+#   user: postgres
+#   host: localhost
+#   port: 5432
+#   password: YOUR_DB_PASSWORD

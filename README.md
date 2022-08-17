@@ -1,28 +1,66 @@
 # SgTinyBackup
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sg_tiny_backup`. To experiment with that code, run `bin/console` for an interactive prompt.
+Simply backup PostgreSQL database to S3.
 
-TODO: Delete this and the text above, and describe your gem
+## Dependencies
+
+This gem needs the following softwares.
+
+* [AWS CLI](https://aws.amazon.com/cli/)
+* [OpenSSL](https://www.openssl.org/)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sg_tiny_backup'
+gem 'sg_tiny_backup', 'https://github.com/SonicGarden/sg_tiny_backup'
 ```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install sg_tiny_backup
 
 ## Usage
 
-TODO: Write usage instructions here
+Generate your config file to `config/sg_tiny_backup.yml`.
+You should modify it according to the comments in it.
+
+```
+bundle exec rake sg_tiny_backup:generate
+```
+
+Backup your database.
+
+```
+bundle exec rake sg_tiny_backup:backup
+```
+
+Show backup command.
+
+```
+bundle exec rake sg_tiny_backup:command
+```
+
+Show decryption command example.
+
+```
+bundle exec rake sg_tiny_backup:decryption_command
+```
+
+## Error reporting
+The backup task raises an error when the backup command fails.
+So your bug tracking service (like Bugsnag, Sentry, ...) can catch the error.
+
+TODO: Build a detailed error message
+
+## How it works
+This gem simply generate a command line string like the following and run it.
+
+```
+PGPASSWORD={PASSWORD} pg_dump --username={USER} --host={HOST} --port={PORT} {DATABASENAME} | \
+gzip | \
+openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass pass:{ENCRYPTION_KEY} | \
+AWS_ACCESS_KEY_ID={ACCESS_KEY} AWS_SECRET_ACCESS_KEY={SECRET_KEY} \
+aws s3 cp - s3://{BUCKET}/{PREFIX}{TIMESTAMP}.sql.gz.enc
+```
+
 
 ## Development
 
@@ -32,7 +70,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sg_tiny_backup.
+Bug reports and pull requests are welcome on GitHub at https://github.com/SonicGarden/sg_tiny_backup.
 
 ## License
 

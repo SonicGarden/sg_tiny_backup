@@ -1,5 +1,10 @@
+require:
+  - rubocop-rspec
+  - rubocop-rake
+
 AllCops:
-  TargetRubyVersion: 2.4
+  NewCops: enable
+  TargetRubyVersion: 2.7
 
 Style/StringLiterals:
   Enabled: true
@@ -9,5 +14,29 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
+Style/Documentation:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: true
+  MinNameLength: 2
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 100
+
+Metrics/BlockLength:
+  Enabled: true
+  Max: 100
+
 Layout/LineLength:
   Max: 120
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 100
+
+RSpec/MultipleExpectations:
+  Enabled: false
