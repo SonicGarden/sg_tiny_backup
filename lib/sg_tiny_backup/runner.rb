@@ -46,7 +46,8 @@ module SgTinyBackup
         user: db_config["user"],
         host: db_config["host"],
         port: db_config["port"],
-        password: db_config["password"]
+        password: db_config["password"],
+        extra_options: @config.pg_dump["extra_options"]
       )
     end
 

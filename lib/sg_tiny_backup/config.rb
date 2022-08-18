@@ -6,16 +6,18 @@ require "fileutils"
 
 module SgTinyBackup
   class Config
+    KEY_PG_DUMP = "pg_dump"
     KEY_S3 = "s3"
     KEY_DB = "db"
     KEY_ENCRYPTION_KEY = "encryption_key"
     KEY_EXPECTED_UPLOAD_SIZE = "expected_upload_size"
 
-    attr_reader :s3, :encryption_key, :db
+    attr_reader :s3, :encryption_key, :pg_dump, :db
 
-    def initialize(s3:, encryption_key:, db: nil)
+    def initialize(s3:, encryption_key:, pg_dump: nil, db: nil)
       @s3 = s3
       @encryption_key = encryption_key
+      @pg_dump = pg_dump || {}
       @db = db || self.class.rails_db_config
     end
 
@@ -52,7 +54,7 @@ module SgTinyBackup
       def read(io)
         yaml = YAML.safe_load(io, [], [], true)
         yaml = resolve_erb(yaml)
-        Config.new(s3: yaml["s3"], encryption_key: yaml["encryption_key"], db: yaml["db"])
+        Config.new(s3: yaml[KEY_S3], encryption_key: yaml[KEY_ENCRYPTION_KEY], db: yaml[KEY_DB], pg_dump: yaml[KEY_PG_DUMP])
       end
 
       def read_file(path)

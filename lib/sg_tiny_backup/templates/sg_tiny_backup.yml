@@ -13,6 +13,8 @@ s3:
   # See https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
   #
   # expected_upload_size: 100000000000
+pg_dump:
+  extra_options: -xc --if-exists --encoding=utf8
 # You can generate ENCRYPTION_KEY with `bundle exec rails secret`.
 encryption_key: <%= ENV.fetch('ENCRYPTION_KEY') %>
 # The following settings is not required since database config can be loaded from config/database.yml in typical rails application.

@@ -10,6 +10,8 @@ RSpec.describe SgTinyBackup::Runner do
           access_key_id: MY_ACCESS_KEY_ID
           secret_access_key: MY_SECRET_ACCESS_KEY
           expected_upload_size: 100000000000
+        pg_dump:
+          extra_options: -xc --if-exists --encoding=utf8
         encryption_key: MY_ENCRYPTION_KEY
         db:
           database: my_database
@@ -23,7 +25,7 @@ RSpec.describe SgTinyBackup::Runner do
       runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
       commands = runner.command.split("|").map(&:strip)
       # rubocop:disable Layout/LineLength
-      expect(commands[0]).to eq "PGPASSWORD=MY_DB_PASSWORD pg_dump --username=postgres --host=localhost --port=15432 my_database"
+      expect(commands[0]).to eq "PGPASSWORD=MY_DB_PASSWORD pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip"
       expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass pass:MY_ENCRYPTION_KEY"
       expect(commands[3]).to eq "AWS_ACCESS_KEY_ID=MY_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=MY_SECRET_ACCESS_KEY aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
