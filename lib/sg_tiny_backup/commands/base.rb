@@ -4,7 +4,7 @@ module SgTinyBackup
   module Commands
     class Base
       def command
-        nil
+        raise NotImplementedError
       end
 
       def env
