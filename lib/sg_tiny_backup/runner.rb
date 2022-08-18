@@ -14,21 +14,15 @@ module SgTinyBackup
 
     def run
       # TODO: Read stderr and build detailed error.
-      # TODO: Do not pass secret informations as command line arguments.
-      system(command, exception: true)
+      system(env, command, exception: true)
     end
 
     def command
-      commands = []
-      commands << pg_dump_command
-      commands << Commands::Gzip.new
-      commands << Commands::Openssl.new(password: @config.encryption_key)
-      commands << aws_cli_command
       commands.map(&:command).join(" | ")
     end
 
-    def decryption_command
-      Commands::Openssl.new(password: @config.encryption_key)
+    def env
+      commands.map(&:env).reduce(&:merge)
     end
 
     def s3_destination_url
@@ -38,6 +32,16 @@ module SgTinyBackup
     end
 
     private
+
+    def commands
+      @commands ||= begin
+        command_array = []
+        command_array << pg_dump_command
+        command_array << Commands::Gzip.new
+        command_array << Commands::Openssl.new(password: @config.encryption_key)
+        command_array << aws_cli_command
+      end
+    end
 
     def pg_dump_command
       db_config = @config.db

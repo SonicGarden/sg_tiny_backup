@@ -24,6 +24,12 @@ namespace :sg_tiny_backup do
     puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).command
   end
 
+  desc "Show backup command environment variables"
+  task env: :environment do
+    config = SgTinyBackup::Config.read_file(default_config_path)
+    puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).env
+  end
+
   desc "Show decryption command"
   task decryption_command: :environment do
     puts SgTinyBackup::Commands::Openssl.decryption_command

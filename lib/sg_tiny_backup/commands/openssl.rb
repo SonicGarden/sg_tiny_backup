@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "./base"
+
 module SgTinyBackup
   module Commands
-    class Openssl
+    class Openssl < Base
       CIPHER = "aes-256-cbc"
       ITER = 10_000
 
@@ -12,8 +14,14 @@ module SgTinyBackup
 
       def command
         parts = ["openssl enc -#{CIPHER} -pbkdf2 -iter #{ITER}"]
-        parts << "-pass pass:#{@password}"
+        parts << "-pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
         parts.join(" ")
+      end
+
+      def env
+        {
+          "SG_TINY_BACKUP_ENCRYPTION_KEY" => @password,
+        }
       end
 
       class << self

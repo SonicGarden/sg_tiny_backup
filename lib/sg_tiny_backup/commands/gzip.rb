@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "./base"
+
 module SgTinyBackup
   module Commands
-    class Gzip
+    class Gzip < Base
       def initialize(level: nil)
         @level = level
       end
