@@ -9,6 +9,7 @@ module SgTinyBackup
       ITER = 10_000
 
       def initialize(password:)
+        super()
         @password = password
       end
 

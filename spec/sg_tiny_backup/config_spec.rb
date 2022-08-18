@@ -16,13 +16,14 @@ RSpec.describe SgTinyBackup::Config do
       YAML
 
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
-      expect(config.s3).to eq ({
+      expected = {
         "bucket" => "my_bucket",
         "prefix" => "my_prefix",
         "access_key_id" => "MY_ACCESS_KEY_ID",
-        "secret_access_key" => "MY_SECRET_ACCESS_KEY"
-      })
-      expect(config.pg_dump).to eq ({ "extra_options" => "-xc --if-exists --encoding=utf8" })
+        "secret_access_key" => "MY_SECRET_ACCESS_KEY",
+      }
+      expect(config.s3).to eq expected
+      expect(config.pg_dump).to eq({ "extra_options" => "-xc --if-exists --encoding=utf8" })
       expect(config.encryption_key).to eq "MY_ENCRYPTION_KEY"
     end
 
@@ -43,12 +44,13 @@ RSpec.describe SgTinyBackup::Config do
       allow(ENV).to receive(:fetch).with("ENCRYPTION_KEY").and_return("MY_ENV_ENCRYPTION_KEY")
 
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
-      expect(config.s3).to eq ({
+      expected = {
         "bucket" => "my_bucket",
         "prefix" => "my_prefix",
         "access_key_id" => "MY_ENV_ACCESS_KEY_ID",
-        "secret_access_key" => "MY_ENV_SECRET_ACCESS_KEY"
-      })
+        "secret_access_key" => "MY_ENV_SECRET_ACCESS_KEY",
+      }
+      expect(config.s3).to eq expected
       expect(config.encryption_key).to eq "MY_ENV_ENCRYPTION_KEY"
     end
   end

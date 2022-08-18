@@ -6,6 +6,7 @@ module SgTinyBackup
   module Commands
     class AwsCli < Base
       def initialize(destination_url:, access_key_id:, secret_access_key:, expected_size: nil)
+        super()
         @destination_url = destination_url
         @access_key_id = access_key_id
         @secret_access_key = secret_access_key

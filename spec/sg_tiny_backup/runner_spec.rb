@@ -56,11 +56,12 @@ RSpec.describe SgTinyBackup::Runner do
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
       runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
       env = runner.env
-      expect(env).to eq ({
-        "PGPASSWORD"=> "MY_DB_PASSWORD",
-        "SG_TINY_BACKUP_ENCRYPTION_KEY"=>"MY_ENCRYPTION_KEY",
-        "AWS_ACCESS_KEY_ID"=>"MY_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"=>"MY_SECRET_ACCESS_KEY"
-      })
+      expected = {
+        "PGPASSWORD" => "MY_DB_PASSWORD",
+        "SG_TINY_BACKUP_ENCRYPTION_KEY" => "MY_ENCRYPTION_KEY",
+        "AWS_ACCESS_KEY_ID" => "MY_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY" => "MY_SECRET_ACCESS_KEY",
+      }
+      expect(env).to eq expected
     end
   end
 end

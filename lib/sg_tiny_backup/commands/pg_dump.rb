@@ -7,7 +7,8 @@ module SgTinyBackup
     class PgDump < Base
       attr_reader :user, :host, :port, :password, :database, :extra_options
 
-      def initialize(database:, user: nil, host: nil, port: nil, password: nil, extra_options: nil)
+      def initialize(database:, user: nil, host: nil, port: nil, password: nil, extra_options: nil) # rubocop:disable Metrics/ParameterLists
+        super()
         @user = user
         @host = host
         @port = port
@@ -29,7 +30,7 @@ module SgTinyBackup
 
       def env
         {
-          "PGPASSWORD" => @password
+          "PGPASSWORD" => @password,
         }.compact
       end
     end

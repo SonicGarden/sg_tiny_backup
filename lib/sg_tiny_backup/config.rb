@@ -54,7 +54,12 @@ module SgTinyBackup
       def read(io)
         yaml = YAML.safe_load(io, [], [], true)
         yaml = resolve_erb(yaml)
-        Config.new(s3: yaml[KEY_S3], encryption_key: yaml[KEY_ENCRYPTION_KEY], db: yaml[KEY_DB], pg_dump: yaml[KEY_PG_DUMP])
+        Config.new(
+          s3: yaml[KEY_S3],
+          encryption_key: yaml[KEY_ENCRYPTION_KEY],
+          db: yaml[KEY_DB],
+          pg_dump: yaml[KEY_PG_DUMP]
+        )
       end
 
       def read_file(path)

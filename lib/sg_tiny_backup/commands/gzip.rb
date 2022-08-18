@@ -6,6 +6,7 @@ module SgTinyBackup
   module Commands
     class Gzip < Base
       def initialize(level: nil)
+        super()
         @level = level
       end
 
