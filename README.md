@@ -51,13 +51,13 @@ So your bug tracking service (like Bugsnag, Sentry, ...) can catch the error.
 TODO: Build a detailed error message
 
 ## How it works
-This gem simply generate a command line string like the following and run it.
+This gem simply generates a command line string like the following and runs it.
+The credentials are passed to each command by environment variables.
 
 ```
-PGPASSWORD={PASSWORD} pg_dump --username={USER} --host={HOST} --port={PORT} {DATABASENAME} | \
+pg_dump --username={USER} --host={HOST} --port={PORT} {DATABASENAME} | \
 gzip | \
-openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass pass:{ENCRYPTION_KEY} | \
-AWS_ACCESS_KEY_ID={ACCESS_KEY} AWS_SECRET_ACCESS_KEY={SECRET_KEY} \
+openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY | \
 aws s3 cp - s3://{BUCKET}/{PREFIX}{TIMESTAMP}.sql.gz.enc
 ```
 
