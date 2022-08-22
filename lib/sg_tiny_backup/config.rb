@@ -21,20 +21,6 @@ module SgTinyBackup
       @db = db || self.class.rails_db_config
     end
 
-    def write(io, with_db: true)
-      yaml = {}
-      yaml[KEY_S3] = s3
-      yaml[KEY_ENCRYPTION_KEY] = encryption_key
-      yaml[KEY_DB] = db if with_db
-      YAML.dump(yaml, io)
-    end
-
-    def write_file(path, with_db: true)
-      File.open(path, "w") do |io|
-        write(io, with_db: with_db)
-      end
-    end
-
     class << self
       def resolve_erb(value)
         case value
