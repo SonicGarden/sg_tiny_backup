@@ -4,6 +4,8 @@ require_relative "commands/aws_cli"
 require_relative "commands/gzip"
 require_relative "commands/pg_dump"
 require_relative "commands/openssl"
+require_relative "pipeline"
+require_relative "error"
 
 module SgTinyBackup
   class Runner
@@ -13,16 +15,22 @@ module SgTinyBackup
     end
 
     def run
-      # TODO: Read stderr and build detailed error.
-      system(env, command, exception: true)
+      pipeline.run
+      output_warning(pipeline.warning_messages)
+      output_error(pipeline.error_messages) if pipeline.failed?
+      pipeline.succeeded?
     end
 
-    def command
-      commands.map(&:command).join(" | ")
+    def plain_commands
+      pipeline.plain_commands
+    end
+
+    def piped_command
+      plain_commands.join(" | ")
     end
 
     def env
-      commands.map(&:env).reduce(&:merge)
+      pipeline.env
     end
 
     def s3_destination_url
@@ -33,14 +41,25 @@ module SgTinyBackup
 
     private
 
-    def commands
-      @commands ||= begin
-        command_array = []
-        command_array << pg_dump_command
-        command_array << Commands::Gzip.new
-        command_array << Commands::Openssl.new(password: @config.encryption_key)
-        command_array << aws_cli_command
+    def pipeline
+      @pipeline ||= begin
+        pl = Pipeline.new
+        pl << pg_dump_command
+        pl << Commands::Gzip.new
+        pl << Commands::Openssl.new(password: @config.encryption_key)
+        pl << aws_cli_command
       end
+    end
+
+    def output_warning(message)
+      return if message.empty?
+
+      SgTinyBackup.logger.warn message
+    end
+
+    def output_error(message)
+      SgTinyBackup.logger.error message
+      raise BackupFailed, message if SgTinyBackup.raise_on_error
     end
 
     def pg_dump_command

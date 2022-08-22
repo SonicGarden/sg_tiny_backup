@@ -13,15 +13,19 @@ namespace :sg_tiny_backup do
     config = SgTinyBackup::Config.read_file(default_config_path)
     runner = SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S"))
     url = runner.s3_destination_url
-    puts "Starting backup to #{url}"
-    runner.run
-    puts "Done!"
+    SgTinyBackup.logger.info "Starting backup to #{url}"
+    if runner.run
+      SgTinyBackup.logger.info "Backup done!"
+    else
+      SgTinyBackup.logger.error "Backup failed!"
+      exit 1
+    end
   end
 
   desc "Show backup command"
   task command: :environment do
     config = SgTinyBackup::Config.read_file(default_config_path)
-    puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).command
+    puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).piped_command
   end
 
   desc "Show backup command environment variables"
