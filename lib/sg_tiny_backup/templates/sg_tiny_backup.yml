@@ -19,7 +19,7 @@ pg_dump:
 encryption_key: <%= ENV.fetch('ENCRYPTION_KEY') %>
 # The following settings is not required since database config can be loaded from config/database.yml in typical rails application.
 # db:
-#   user: postgres
 #   host: localhost
 #   port: 5432
+#   username: postgres
 #   password: YOUR_DB_PASSWORD

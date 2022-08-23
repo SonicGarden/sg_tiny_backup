@@ -15,9 +15,9 @@ RSpec.describe SgTinyBackup::Runner do
         encryption_key: MY_ENCRYPTION_KEY
         db:
           database: my_database
-          user: postgres
           host: localhost
           port: 15432
+          username: postgres
           password: MY_DB_PASSWORD
       YAML
 
@@ -47,9 +47,9 @@ RSpec.describe SgTinyBackup::Runner do
         encryption_key: MY_ENCRYPTION_KEY
         db:
           database: my_database
-          user: postgres
           host: localhost
           port: 15432
+          username: postgres
           password: MY_DB_PASSWORD
       YAML
 
@@ -88,9 +88,9 @@ RSpec.describe SgTinyBackup::Runner do
         encryption_key: MY_ENCRYPTION_KEY
         db:
           database: my_database
-          user: postgres
           host: localhost
           port: 15432
+          username: postgres
           password: MY_DB_PASSWORD
       YAML
       config = SgTinyBackup::Config.read(StringIO.new(yaml))

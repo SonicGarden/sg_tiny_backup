@@ -76,9 +76,9 @@ module SgTinyBackup
       db_config = @config.db
       Commands::PgDump.new(
         database: db_config["database"],
-        user: db_config["user"],
         host: db_config["host"],
         port: db_config["port"],
+        user: db_config["username"] || db_config["user"],
         password: db_config["password"],
         extra_options: @config.pg_dump["extra_options"]
       )
