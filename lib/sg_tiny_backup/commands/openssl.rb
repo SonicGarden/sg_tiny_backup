@@ -8,14 +8,16 @@ module SgTinyBackup
       CIPHER = "aes-256-cbc"
       ITER = 10_000
 
-      def initialize(password:)
+      def initialize(password:, filename: nil)
         super()
         @password = password
+        @filename = filename
       end
 
       def command
         parts = ["openssl enc -#{CIPHER} -pbkdf2 -iter #{ITER}"]
         parts << "-pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+        parts << "-out #{@filename}" if @filename
         parts.join(" ")
       end
 

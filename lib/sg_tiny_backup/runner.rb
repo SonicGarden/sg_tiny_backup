@@ -9,9 +9,10 @@ require_relative "error"
 
 module SgTinyBackup
   class Runner
-    def initialize(config:, basename:)
+    def initialize(config:, basename:, local: false)
       @config = config
       @basename = basename
+      @local = local
     end
 
     def run
@@ -35,8 +36,12 @@ module SgTinyBackup
 
     def s3_destination_url
       s3_config = @config.s3
-      object_path = [s3_config["prefix"], "#{@basename}.sql.gz.enc"].join
+      object_path = [s3_config["prefix"], base_filename].join
       "s3://#{File.join(s3_config["bucket"], object_path)}"
+    end
+
+    def base_filename
+      "#{@basename}.sql.gz.enc"
     end
 
     private
@@ -46,8 +51,13 @@ module SgTinyBackup
         pl = Pipeline.new
         pl << pg_dump_command
         pl << Commands::Gzip.new
-        pl << Commands::Openssl.new(password: @config.encryption_key)
-        pl << aws_cli_command
+        if @local
+          pl << Commands::Openssl.new(password: @config.encryption_key, filename: base_filename)
+        else
+          pl << Commands::Openssl.new(password: @config.encryption_key)
+          pl << aws_cli_command
+        end
+        pl
       end
     end
 
