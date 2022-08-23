@@ -38,7 +38,7 @@ module SgTinyBackup
       end
 
       def read(io)
-        yaml = YAML.safe_load(io, [], [], true)
+        yaml = YAML.safe_load(io, permitted_classes: [], permitted_symbols: [], aliases: true)
         yaml = resolve_erb(yaml)
         Config.new(
           s3: yaml[KEY_S3],
@@ -69,7 +69,7 @@ module SgTinyBackup
         return unless defined?(Rails)
 
         db_config = File.open(Rails.root.join("config", "database.yml"), "r") do |f|
-          YAML.safe_load(f, [], [], true)
+          YAML.safe_load(f, permitted_classes: [], permitted_symbols: [], aliases: true)
         end
         db_config[Rails.env]
       end
