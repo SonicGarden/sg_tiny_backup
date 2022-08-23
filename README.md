@@ -47,6 +47,10 @@ bundle exec rake sg_tiny_backup:decryption_command
 
 ## Setting logger
 
+Logs are outputted to standard output by default.
+
+You can change the logger if you want.
+
 ```ruby
 SgTinyBackup.logger = Rails.logger
 ```
