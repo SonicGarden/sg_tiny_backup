@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SgTinyBackup::Runner do
-  describe "#command" do
+  describe "#plain_commands" do
     it "generates backup command" do
       yaml = <<~YAML
         s3:
@@ -23,7 +23,7 @@ RSpec.describe SgTinyBackup::Runner do
 
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
       runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
-      commands = runner.command.split("|").map(&:strip)
+      commands = runner.plain_commands
       # rubocop:disable Layout/LineLength
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip"
@@ -62,6 +62,73 @@ RSpec.describe SgTinyBackup::Runner do
         "AWS_ACCESS_KEY_ID" => "MY_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY" => "MY_SECRET_ACCESS_KEY",
       }
       expect(env).to eq expected
+    end
+  end
+
+  describe "raise_on_error" do
+    let(:pipeline) do
+      pipeline = instance_double(SgTinyBackup::Pipeline)
+      allow(pipeline).to receive(:run)
+      allow(pipeline).to receive(:succeeded?).and_return(false)
+      allow(pipeline).to receive(:failed?).and_return(true)
+      allow(pipeline).to receive(:warning_messages).and_return("")
+      allow(pipeline).to receive(:error_messages).and_return("Error occured")
+      pipeline
+    end
+    let(:runner) do
+      yaml = <<~YAML
+        s3:
+          bucket: my_bucket
+          prefix: backup/database_
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+          expected_upload_size: 100000000000
+        pg_dump:
+          extra_options: -xc --if-exists --encoding=utf8
+        encryption_key: MY_ENCRYPTION_KEY
+        db:
+          database: my_database
+          user: postgres
+          host: localhost
+          port: 15432
+          password: MY_DB_PASSWORD
+      YAML
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
+      allow(runner).to receive(:pipeline) { pipeline }
+      runner
+    end
+
+    context "when SgTinyBackup.raise_on_error is true" do
+      before do
+        allow(SgTinyBackup).to receive(:raise_on_error).and_return(true)
+      end
+
+      it "raises error" do
+        logger = instance_spy(Logger)
+        allow(SgTinyBackup).to receive(:logger).and_return(logger)
+
+        expect do
+          runner.run
+        end.to raise_error SgTinyBackup::BackupFailed, "Error occured"
+
+        expect(logger).to have_received(:error).with("Error occured")
+      end
+    end
+
+    context "when SgTinyBackup.raise_on_error is false" do
+      before do
+        allow(SgTinyBackup).to receive(:raise_on_error).and_return(false)
+      end
+
+      it "does not raise error" do
+        logger = instance_spy(Logger)
+        allow(SgTinyBackup).to receive(:logger).and_return(logger)
+
+        expect(runner.run).to be_falsey
+
+        expect(logger).to have_received(:error).with("Error occured")
+      end
     end
   end
 end

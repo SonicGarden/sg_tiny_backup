@@ -6,8 +6,9 @@ Simply backup PostgreSQL database to S3.
 
 This gem needs the following softwares.
 
-* [AWS CLI](https://aws.amazon.com/cli/)
+* [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
 * [OpenSSL](https://www.openssl.org/)
+* [AWS CLI](https://aws.amazon.com/cli/)
 
 ## Installation
 
@@ -44,11 +45,24 @@ Show decryption command example.
 bundle exec rake sg_tiny_backup:decryption_command
 ```
 
+## Setting logger
+
+Logs are outputted to standard output by default.
+
+You can change the logger if you want.
+
+```ruby
+SgTinyBackup.logger = Rails.logger
+```
+
 ## Error reporting
-The backup task raises an error when the backup command fails.
+
+If `SgTinyBackup.raise_on_error` is true, the backup task raises an error when the backup command fails.
 So your bug tracking service (like Bugsnag, Sentry, ...) can catch the error.
 
-TODO: Build a detailed error message
+```ruby
+SgTinyBackup.raise_on_error = true
+```
 
 ## How it works
 This gem simply generates a command line string like the following and runs it.
@@ -60,7 +74,6 @@ gzip | \
 openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY | \
 aws s3 cp - s3://{BUCKET}/{PREFIX}{TIMESTAMP}.sql.gz.enc
 ```
-
 
 ## Development
 

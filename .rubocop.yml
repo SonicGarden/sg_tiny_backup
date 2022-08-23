@@ -6,6 +6,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 2.7
 
+Layout/LineLength:
+  Max: 120
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
@@ -18,7 +21,13 @@ Style/TrailingCommaInHashLiteral:
   Enabled: true
   EnforcedStyleForMultiline: consistent_comma
 
+Style/NumericPredicate:
+  Enabled: false
+
 Style/Documentation:
+  Enabled: false
+
+Style/GlobalStdStream:
   Enabled: false
 
 Naming/MethodParameterName:
@@ -32,9 +41,6 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Enabled: true
   Max: 100
-
-Layout/LineLength:
-  Max: 120
 
 RSpec/DescribedClass:
   Enabled: false

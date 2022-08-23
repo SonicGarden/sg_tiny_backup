@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "simplecov"
 require "sg_tiny_backup"
 
 RSpec.configure do |config|
