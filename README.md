@@ -20,26 +20,32 @@ gem 'sg_tiny_backup', 'https://github.com/SonicGarden/sg_tiny_backup'
 
 ## Usage
 
-Generate your config file to `config/sg_tiny_backup.yml`.
+### Generate your config file to `config/sg_tiny_backup.yml`
 You should modify it according to the comments in it.
 
 ```
 bundle exec rake sg_tiny_backup:generate
 ```
 
-Backup your database.
+### Backup your database to S3
 
 ```
 bundle exec rake sg_tiny_backup:backup
 ```
 
-Show backup command.
+### Backup your database to current directory
+
+```
+bundle exec rake sg_tiny_backup:backup_local
+```
+
+### Show backup command
 
 ```
 bundle exec rake sg_tiny_backup:command
 ```
 
-Show decryption command example.
+### Show decryption command example
 
 ```
 bundle exec rake sg_tiny_backup:decryption_command
