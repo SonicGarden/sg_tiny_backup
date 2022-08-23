@@ -80,7 +80,7 @@ module SgTinyBackup
         @stdout = out_r.read
         @stderr = err_r.read
         pipe_status_str = status_r.read
-        Process.wait2(pid)
+        Process.wait(pid)
         parse_pipe_status(pipe_status_str)
       end
     rescue StandardError => e
