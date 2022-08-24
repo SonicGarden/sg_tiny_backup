@@ -11,14 +11,21 @@ module SgTinyBackup
     KEY_DB = "db"
     KEY_ENCRYPTION_KEY = "encryption_key"
     KEY_EXPECTED_UPLOAD_SIZE = "expected_upload_size"
+    KEY_LOG = "log"
+    KEY_FILES = "files"
 
     attr_reader :s3, :encryption_key, :pg_dump, :db
 
-    def initialize(s3:, encryption_key:, pg_dump: nil, db: nil)
+    def initialize(s3:, encryption_key:, pg_dump: nil, db: nil, log: nil)
       @s3 = s3
       @encryption_key = encryption_key
       @pg_dump = pg_dump || {}
       @db = db || self.class.rails_db_config
+      @log = log || {}
+    end
+
+    def log_file_paths
+      @log[KEY_FILES] || []
     end
 
     class << self
@@ -44,7 +51,8 @@ module SgTinyBackup
           s3: yaml[KEY_S3],
           encryption_key: yaml[KEY_ENCRYPTION_KEY],
           db: yaml[KEY_DB],
-          pg_dump: yaml[KEY_PG_DUMP]
+          pg_dump: yaml[KEY_PG_DUMP],
+          log: yaml[KEY_LOG]
         )
       end
 

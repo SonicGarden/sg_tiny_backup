@@ -2,14 +2,15 @@
 
 RSpec.describe SgTinyBackup::Runner do
   describe "#plain_commands" do
-    it "generates backup command" do
+    it "generates database backup command" do
       yaml = <<~YAML
         s3:
-          bucket: my_bucket
-          prefix: backup/database_
-          access_key_id: MY_ACCESS_KEY_ID
-          secret_access_key: MY_SECRET_ACCESS_KEY
-          expected_upload_size: 100000000000
+          db:
+            bucket: my_bucket
+            prefix: backup/database_
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+            expected_upload_size: 100000000000
         pg_dump:
           extra_options: -xc --if-exists --encoding=utf8
         encryption_key: MY_ENCRYPTION_KEY
@@ -31,17 +32,40 @@ RSpec.describe SgTinyBackup::Runner do
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
       # rubocop:enable Layout/LineLength
     end
+
+    it "generates log backup command" do
+      yaml = <<~YAML
+        s3:
+          log:
+            bucket: my_bucket
+            prefix: backup/log_
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+        log:
+          files:
+            - log/production.log
+            - log/production.log.1
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "01234567")
+      commands = runner.plain_commands
+      expect(commands[0]).to eq "tar -c log/production.log log/production.log.1"
+      expect(commands[1]).to eq "gzip"
+      expect(commands[2]).to eq "aws s3 cp - s3://my_bucket/backup/log_01234567.tar.gz"
+    end
   end
 
   describe "#env" do
     it "generates backup envrionment variables" do
       yaml = <<~YAML
         s3:
-          bucket: my_bucket
-          prefix: backup/database_
-          access_key_id: MY_ACCESS_KEY_ID
-          secret_access_key: MY_SECRET_ACCESS_KEY
-          expected_upload_size: 100000000000
+          db:
+            bucket: my_bucket
+            prefix: backup/database_
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+            expected_upload_size: 100000000000
         pg_dump:
           extra_options: -xc --if-exists --encoding=utf8
         encryption_key: MY_ENCRYPTION_KEY
@@ -59,7 +83,8 @@ RSpec.describe SgTinyBackup::Runner do
       expected = {
         "PGPASSWORD" => "MY_DB_PASSWORD",
         "SG_TINY_BACKUP_ENCRYPTION_KEY" => "MY_ENCRYPTION_KEY",
-        "AWS_ACCESS_KEY_ID" => "MY_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY" => "MY_SECRET_ACCESS_KEY",
+        "AWS_ACCESS_KEY_ID" => "MY_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY" => "MY_SECRET_ACCESS_KEY",
       }
       expect(env).to eq expected
     end
@@ -78,11 +103,12 @@ RSpec.describe SgTinyBackup::Runner do
     let(:runner) do
       yaml = <<~YAML
         s3:
-          bucket: my_bucket
-          prefix: backup/database_
-          access_key_id: MY_ACCESS_KEY_ID
-          secret_access_key: MY_SECRET_ACCESS_KEY
-          expected_upload_size: 100000000000
+          db:
+            bucket: my_bucket
+            prefix: backup/database_
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+            expected_upload_size: 100000000000
         pg_dump:
           extra_options: -xc --if-exists --encoding=utf8
         encryption_key: MY_ENCRYPTION_KEY
