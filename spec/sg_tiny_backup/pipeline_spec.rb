@@ -30,10 +30,8 @@ RSpec.describe SgTinyBackup::Pipeline do
 
     it "get stdout, stderr and error_messages" do
       pipeline = SgTinyBackup::Pipeline.new
-      # rubocop:disable Layout/LineLength
       pipeline << build_command_instance("#{test_command} name=first exit=42 stdout=first_output stderr=first_error")
       pipeline << build_command_instance("#{test_command} name=second exit=0 read_stdin stdout=second_output stderr=second_error")
-      # rubocop:enable Layout/LineLength
 
       pipeline.run
 

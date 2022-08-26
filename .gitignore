@@ -6,6 +6,9 @@
 /pkg/
 /spec/reports/
 /tmp/
+/config/database.yml
 
 # rspec failure tracking
 .rspec_status
+
+.vscode

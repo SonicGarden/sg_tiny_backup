@@ -25,12 +25,10 @@ RSpec.describe SgTinyBackup::Runner do
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
       runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
       commands = runner.plain_commands
-      # rubocop:disable Layout/LineLength
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip"
       expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
-      # rubocop:enable Layout/LineLength
     end
 
     it "generates log backup command" do
