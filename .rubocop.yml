@@ -7,7 +7,15 @@ AllCops:
   TargetRubyVersion: 2.7
 
 Layout/LineLength:
-  Max: 120
+  Max: 150
+
+Layout/ArrayAlignment:
+  Enabled: true
+  EnforcedStyle: with_fixed_indentation
+
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
 
 Style/StringLiterals:
   Enabled: true
@@ -18,6 +26,10 @@ Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
 
 Style/TrailingCommaInHashLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInArrayLiteral:
   Enabled: true
   EnforcedStyleForMultiline: consistent_comma
 
@@ -41,6 +53,9 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Enabled: true
   Max: 100
+
+RSpec/DescribeClass:
+  Enabled: false
 
 RSpec/DescribedClass:
   Enabled: false

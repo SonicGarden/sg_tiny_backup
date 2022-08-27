@@ -9,9 +9,14 @@ namespace :sg_tiny_backup do
   end
 
   desc "Backup and upload to s3"
-  task backup: :environment do
+  task :backup, [:backup_target] => :environment do |_task, args|
+    backup_target = args[:backup_target] || "db"
     config = SgTinyBackup::Config.read_file(default_config_path)
-    runner = SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S"))
+    runner = SgTinyBackup::Runner.new(
+      config: config,
+      target: backup_target,
+      basename: SgTinyBackup::Utils.timestamp
+    )
     url = runner.s3_destination_url
     SgTinyBackup.logger.info "Starting backup to #{url}"
     if runner.run
@@ -23,9 +28,15 @@ namespace :sg_tiny_backup do
   end
 
   desc "Backup to current directory"
-  task backup_local: :environment do
+  task :backup_local, [:backup_target] => :environment do |_task, args|
+    backup_target = args[:backup_target] || "db"
     config = SgTinyBackup::Config.read_file(default_config_path)
-    runner = SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S"), local: true)
+    runner = SgTinyBackup::Runner.new(
+      config: config,
+      target: backup_target,
+      basename: SgTinyBackup::Utils.timestamp,
+      local: true
+    )
     SgTinyBackup.logger.info "Starting backup to #{runner.base_filename}"
     if runner.run
       SgTinyBackup.logger.info "Backup done!"
@@ -36,15 +47,27 @@ namespace :sg_tiny_backup do
   end
 
   desc "Show backup command"
-  task command: :environment do
+  task :command, [:backup_target] => :environment do |_task, args|
+    backup_target = args[:backup_target] || "db"
     config = SgTinyBackup::Config.read_file(default_config_path)
-    puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).piped_command
+    runner = SgTinyBackup::Runner.new(
+      config: config,
+      target: backup_target,
+      basename: SgTinyBackup::Utils.timestamp
+    )
+    puts runner.piped_command
   end
 
   desc "Show backup command environment variables"
-  task env: :environment do
+  task :env, [:backup_target] => :environment do |_task, args|
+    backup_target = args[:backup_target] || "db"
     config = SgTinyBackup::Config.read_file(default_config_path)
-    puts SgTinyBackup::Runner.new(config: config, basename: Time.now.strftime("%Y%m%d%H%M%S")).env
+    runner = SgTinyBackup::Runner.new(
+      config: config,
+      target: backup_target,
+      basename: SgTinyBackup::Utils.timestamp
+    )
+    puts runner.env
   end
 
   desc "Show decryption command"

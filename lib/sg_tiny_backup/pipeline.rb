@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "error"
+require "shellwords"
+require "sg_tiny_backup/error"
 
 module SgTinyBackup
   class Pipeline
     attr_reader :stdout, :stderr, :exit_code_errors
 
-    def initialize
+    def initialize(output_path: nil)
       @commands = []
       @exit_code_errors = []
+      @output_path = output_path
     end
 
     def <<(command)
@@ -122,7 +124,9 @@ module SgTinyBackup
       @commands.each_with_index do |command, index|
         parts << %({ #{command.command} ; echo "#{index}|$?:" >&3 ; })
       end
-      parts.join(" | ")
+      command = parts.join(" | ")
+      command += "> #{Shellwords.escape(@output_path)}" if @output_path
+      command
     end
   end
 end

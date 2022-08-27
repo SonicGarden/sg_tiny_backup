@@ -2,16 +2,7 @@
 
 RSpec.describe SgTinyBackup::Pipeline do
   let(:test_command) do
-    script = File.expand_path("../test_commands/test.rb", __dir__)
-    "ruby #{script}"
-  end
-
-  def build_command_instance(command_str)
-    k = Class.new(SgTinyBackup::Commands::Base)
-    k.define_method :command do
-      command_str
-    end
-    k.new
+    TestCommandHelper.test_command
   end
 
   describe "#run" do
@@ -30,10 +21,8 @@ RSpec.describe SgTinyBackup::Pipeline do
 
     it "get stdout, stderr and error_messages" do
       pipeline = SgTinyBackup::Pipeline.new
-      # rubocop:disable Layout/LineLength
       pipeline << build_command_instance("#{test_command} name=first exit=42 stdout=first_output stderr=first_error")
       pipeline << build_command_instance("#{test_command} name=second exit=0 read_stdin stdout=second_output stderr=second_error")
-      # rubocop:enable Layout/LineLength
 
       pipeline.run
 

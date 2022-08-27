@@ -7,8 +7,14 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    debug (1.6.2)
+      irb (>= 1.3.6)
+      reline (>= 0.3.1)
     diff-lcs (1.5.0)
     docile (1.4.0)
+    io-console (0.5.11)
+    irb (1.4.1)
+      reline (>= 0.3.0)
     json (2.6.2)
     parallel (1.22.1)
     parser (3.1.2.1)
@@ -16,6 +22,8 @@ GEM
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.5.0)
+    reline (0.3.1)
+      io-console (~> 0.5)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
@@ -30,7 +38,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    rubocop (1.35.0)
+    rubocop (1.35.1)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.2.1)
@@ -52,6 +60,7 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
+    simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
     unicode-display_width (2.2.0)
 
@@ -59,13 +68,15 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  debug
   rake (~> 13.0)
   rspec (~> 3.11)
   rubocop (~> 1.35)
   rubocop-rake (~> 0.6)
   rubocop-rspec (~> 2.0)
   sg_tiny_backup!
-  simplecov (~> 0.21.2)
+  simplecov
+  simplecov-lcov
 
 BUNDLED WITH
-   2.2.22
+   2.3.21

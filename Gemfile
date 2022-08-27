@@ -12,4 +12,7 @@ gem "rspec", "~> 3.11"
 gem "rubocop", "~> 1.35"
 gem "rubocop-rake", "~> 0.6"
 gem "rubocop-rspec", "~> 2.0"
-gem "simplecov", "~> 0.21.2"
+gem "simplecov"
+gem "simplecov-lcov"
+
+gem "debug"

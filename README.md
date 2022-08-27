@@ -1,6 +1,6 @@
 # SgTinyBackup
 
-Simply backup PostgreSQL database to S3.
+Simply backup PostgreSQL database and logs to S3.
 
 ## Dependencies
 
@@ -15,7 +15,7 @@ This gem needs the following softwares.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sg_tiny_backup', 'https://github.com/SonicGarden/sg_tiny_backup'
+gem 'sg_tiny_backup', 'https://github.com/SonicGarden/sg_tiny_backup', tag: 'v0.2.0'
 ```
 
 ## Usage
@@ -30,19 +30,31 @@ bundle exec rake sg_tiny_backup:generate
 ### Backup your database to S3
 
 ```
+# backup database
 bundle exec rake sg_tiny_backup:backup
+
+# backup logs
+bundle exec rake 'sg_tiny_backup:backup[log]'
 ```
 
 ### Backup your database to current directory
 
 ```
+# backup database
 bundle exec rake sg_tiny_backup:backup_local
+
+# backup logs
+bundle exec rake 'sg_tiny_backup:backup_local[log]'
 ```
 
 ### Show backup command
 
 ```
+# show database backup command
 bundle exec rake sg_tiny_backup:command
+
+# show log backup command
+bundle exec rake 'sg_tiny_backup:command[log]'
 ```
 
 ### Show decryption command example
