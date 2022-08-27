@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.3.0] - 2022-08-27
+
+### Breaking changes
+- Change S3 path
+- Log backup filename includes hostname
+
 ## [0.2.0] - 2022-08-27
 
 ### Features
