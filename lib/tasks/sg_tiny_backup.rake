@@ -15,7 +15,7 @@ namespace :sg_tiny_backup do
     runner = SgTinyBackup::Runner.new(
       config: config,
       target: backup_target,
-      basename: SgTinyBackup::Utils.timestamp
+      basename: SgTinyBackup::Utils.basename(backup_target)
     )
     url = runner.s3_destination_url
     SgTinyBackup.logger.info "Starting backup to #{url}"
@@ -34,7 +34,7 @@ namespace :sg_tiny_backup do
     runner = SgTinyBackup::Runner.new(
       config: config,
       target: backup_target,
-      basename: SgTinyBackup::Utils.timestamp,
+      basename: SgTinyBackup::Utils.basename(backup_target),
       local: true
     )
     SgTinyBackup.logger.info "Starting backup to #{runner.base_filename}"

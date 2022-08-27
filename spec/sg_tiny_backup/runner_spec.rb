@@ -7,7 +7,7 @@ RSpec.describe SgTinyBackup::Runner do
         s3:
           db:
             bucket: my_bucket
-            prefix: backup/database_
+            prefix: backup/database
             access_key_id: MY_ACCESS_KEY_ID
             secret_access_key: MY_SECRET_ACCESS_KEY
             expected_upload_size: 100000000000
@@ -40,7 +40,7 @@ RSpec.describe SgTinyBackup::Runner do
         s3:
           log:
             bucket: my_bucket
-            prefix: backup/log_
+            prefix: backup/log
             access_key_id: MY_ACCESS_KEY_ID
             secret_access_key: MY_SECRET_ACCESS_KEY
         log:

@@ -17,7 +17,7 @@ module SgTinyBackup
         end
 
         def build_s3_url(s3_config:, base_filename:)
-          object_path = [s3_config["prefix"], base_filename].join
+          object_path = [s3_config["prefix"], base_filename].join("_")
           "s3://#{File.join(s3_config["bucket"], object_path)}"
         end
       end
