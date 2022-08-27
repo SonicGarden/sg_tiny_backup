@@ -2,16 +2,7 @@
 
 RSpec.describe SgTinyBackup::Pipeline do
   let(:test_command) do
-    script = File.expand_path("../test_commands/test.rb", __dir__)
-    "ruby #{script}"
-  end
-
-  def build_command_instance(command_str)
-    k = Class.new(SgTinyBackup::Commands::Base)
-    k.define_method :command do
-      command_str
-    end
-    k.new
+    TestCommandHelper.test_command
   end
 
   describe "#run" do

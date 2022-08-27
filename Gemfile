@@ -13,3 +13,5 @@ gem "rubocop", "~> 1.35"
 gem "rubocop-rake", "~> 0.6"
 gem "rubocop-rspec", "~> 2.0"
 gem "simplecov", "~> 0.21.2"
+
+gem "debug"

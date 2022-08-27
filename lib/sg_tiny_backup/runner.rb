@@ -12,11 +12,12 @@ module SgTinyBackup
     TARGET_DB = "db"
     TARGET_LOG = "log"
 
-    def initialize(config:, basename:, target: "db", local: false)
+    def initialize(config:, basename:, target: "db", local: false, pipeline_builder: nil)
       @config = config
       @basename = basename
       @target = target
       @local = local
+      @pipeline_builder = pipeline_builder
     end
 
     def run

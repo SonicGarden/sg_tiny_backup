@@ -2,7 +2,7 @@ s3:
   db:
     # Destination url is `s3://{BUCKET}/{PREFIX}{TIMESTAMP}.sql.gz.enc`.
     bucket: YOUR_S3_BUCKET_NAME
-    prefix: backup/database_
+    prefix: YOUR_PROJECT/YOUR_PROJECT_
     access_key_id: <%= ENV.fetch('AWS_ACCESS_KEY_ID') %>
     secret_access_key: <%= ENV.fetch('AWS_SECRET_ACCESS_KEY') %>
     # If your backup file size exceeds 50GB, you must specify `expected_upload_size`.
@@ -17,7 +17,7 @@ s3:
   log:
     # Destination url is `s3://{BUCKET}/{PREFIX}{TIMESTAMP}.tar.gz`.
     bucket: YOUR_S3_BUCKET_NAME
-    prefix: backup/log_
+    prefix: YOUR_PROJECT/YOUR_PROJECT_
     access_key_id: <%= ENV.fetch('AWS_ACCESS_KEY_ID') %>
     secret_access_key: <%= ENV.fetch('AWS_SECRET_ACCESS_KEY') %>
     # expected_upload_size: 100000000000

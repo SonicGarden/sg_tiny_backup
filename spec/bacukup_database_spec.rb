@@ -2,7 +2,7 @@
 
 require "fileutils"
 
-RSpec.describe "Dump and decryption" do # rubocop:disable RSpec/MultipleMemoizedHelpers
+RSpec.describe "Backup database" do # rubocop:disable RSpec/MultipleMemoizedHelpers
   let(:yaml) do
     YAML.safe_load(
       File.read("config/database.yml"),
@@ -53,21 +53,15 @@ RSpec.describe "Dump and decryption" do # rubocop:disable RSpec/MultipleMemoized
       "PGPASSWORD" => pg_password,
     }
     system(env, "dropdb --if-exists -h #{pg_host} -p #{pg_port} -U #{pg_username} #{pg_database}", exception: true)
-    # FileUtils.rm_rf("tmp/dump")
+    FileUtils.rm_rf("tmp/dump")
   end
 
   it "creates encyrpted dump and decrypts it" do
     config = SgTinyBackup::Config.new(
       s3: {
-        db: {
-          bucket: "my_bucket",
-          prefix: "backup/database_",
-          access_key_id: "MY_ACCESS_KEY_ID",
-          secret_access_key: "MY_SECRET_ACCESS_KEY",
-        },
       },
       pg_dump: {
-        extra_options: "-xc --if-exists --encoding=utf8",
+        "extra_options" => "-xc --if-exists --encoding=utf8",
       },
       encryption_key: encryption_key,
       db: yaml["test"]

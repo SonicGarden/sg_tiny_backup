@@ -29,6 +29,10 @@ RSpec.describe SgTinyBackup::Runner do
       expect(commands[1]).to eq "gzip"
       expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
+
+      expect(runner.piped_command).to eq commands.join(" | ")
+      expect(runner.s3_destination_url).to eq "s3://my_bucket/backup/database_01234567.sql.gz.enc"
+      expect(runner.base_filename).to eq "01234567.sql.gz.enc"
     end
 
     it "generates log backup command" do
@@ -85,6 +89,43 @@ RSpec.describe SgTinyBackup::Runner do
         "AWS_SECRET_ACCESS_KEY" => "MY_SECRET_ACCESS_KEY",
       }
       expect(env).to eq expected
+    end
+  end
+
+  describe "warning" do
+    let(:warn_builder) do
+      klass = Class.new do
+        def build
+          pl = SgTinyBackup::Pipeline.new
+          pl << TestCommandHelper.build_test_command_instance("first_command exit=0 stderr=first_error stdout=first_out")
+          pl << TestCommandHelper.build_test_command_instance("second_command exit=0 read_stdin stderr=second_error")
+          pl
+        end
+      end
+      klass.new
+    end
+
+    it "scucceeds and outputs warnings" do
+      logger = instance_spy(Logger)
+      allow(SgTinyBackup).to receive(:logger).and_return(logger)
+
+      config = SgTinyBackup::Config.new(
+        s3: {},
+        log: {},
+        encryption_key: "dummy",
+        db: {}
+      )
+      runner = SgTinyBackup::Runner.new(config: config, basename: "dummy", pipeline_builder: warn_builder)
+      expect(runner.run).to be_truthy
+
+      expected_message = <<~END_OF_MESSAGE
+        STDERR messages:
+
+        first_error
+        second_error
+
+      END_OF_MESSAGE
+      expect(logger).to have_received(:warn).with(expected_message)
     end
   end
 
