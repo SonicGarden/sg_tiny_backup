@@ -2,6 +2,7 @@
 
 namespace :sg_tiny_backup do
   default_config_path = ENV["SG_TINY_BACKUP_CONFIG_PATH"] || "config/sg_tiny_backup.yml"
+  default_backup_target = ENV["BACKUP_TARGET"] || "db"
 
   desc "Generate config file"
   task generate: :environment do
@@ -10,7 +11,7 @@ namespace :sg_tiny_backup do
 
   desc "Backup and upload to s3"
   task :backup, [:backup_target] => :environment do |_task, args|
-    backup_target = args[:backup_target] || "db"
+    backup_target = args[:backup_target] || default_backup_target
     config = SgTinyBackup::Config.read_file(default_config_path)
     runner = SgTinyBackup::Runner.new(
       config: config,
@@ -29,7 +30,7 @@ namespace :sg_tiny_backup do
 
   desc "Backup to current directory"
   task :backup_local, [:backup_target] => :environment do |_task, args|
-    backup_target = args[:backup_target] || "db"
+    backup_target = args[:backup_target] || default_backup_target
     config = SgTinyBackup::Config.read_file(default_config_path)
     runner = SgTinyBackup::Runner.new(
       config: config,
@@ -48,7 +49,7 @@ namespace :sg_tiny_backup do
 
   desc "Show backup command"
   task :command, [:backup_target] => :environment do |_task, args|
-    backup_target = args[:backup_target] || "db"
+    backup_target = args[:backup_target] || default_backup_target
     config = SgTinyBackup::Config.read_file(default_config_path)
     runner = SgTinyBackup::Runner.new(
       config: config,
@@ -60,7 +61,7 @@ namespace :sg_tiny_backup do
 
   desc "Show backup command environment variables"
   task :env, [:backup_target] => :environment do |_task, args|
-    backup_target = args[:backup_target] || "db"
+    backup_target = args[:backup_target] || default_backup_target
     config = SgTinyBackup::Config.read_file(default_config_path)
     runner = SgTinyBackup::Runner.new(
       config: config,
