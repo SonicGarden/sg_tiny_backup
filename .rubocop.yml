@@ -9,6 +9,14 @@ AllCops:
 Layout/LineLength:
   Max: 150
 
+Layout/ArrayAlignment:
+  Enabled: true
+  EnforcedStyle: with_fixed_indentation
+
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes

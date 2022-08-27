@@ -1,6 +1,6 @@
 name: Ruby
 
-on: [push, pull_request]
+on: [pull_request]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -36,3 +36,10 @@ jobs:
         run: bundle exec rspec
       - name: rubocop
         run: bundle exec rubocop
+      - uses: k1LoW/octocov-action@v0
+      - name: Archive coverage artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+        if: always()
