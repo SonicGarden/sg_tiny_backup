@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.4.0] - 2022-08-27
+
+### Features
+- Rake tasks use BACKUP_TARGET environment variable
+
 ## [0.3.0] - 2022-08-27
 
 ### Breaking changes
