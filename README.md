@@ -34,7 +34,7 @@ bundle exec rake sg_tiny_backup:generate
 bundle exec rake sg_tiny_backup:backup
 
 # backup logs
-bundle exec rake 'sg_tiny_backup:backup[log]'
+bundle exec rake sg_tiny_backup:backup BACKUP_TARGET=log
 ```
 
 ### Backup your database to current directory
@@ -44,7 +44,7 @@ bundle exec rake 'sg_tiny_backup:backup[log]'
 bundle exec rake sg_tiny_backup:backup_local
 
 # backup logs
-bundle exec rake 'sg_tiny_backup:backup_local[log]'
+bundle exec rake sg_tiny_backup:backup_local BACKUP_TARGET=log
 ```
 
 ### Show backup command
@@ -54,7 +54,7 @@ bundle exec rake 'sg_tiny_backup:backup_local[log]'
 bundle exec rake sg_tiny_backup:command
 
 # show log backup command
-bundle exec rake 'sg_tiny_backup:command[log]'
+bundle exec rake sg_tiny_backup:command BACKUP_TARGET=log
 ```
 
 ### Show decryption command example
