@@ -5,13 +5,14 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in sg_tiny_backup.gemspec
 gemspec
 
-gem "rake", "~> 13.0"
+gem "rake"
 
-gem "rspec", "~> 3.11"
+gem "rspec"
 
-gem "rubocop", "~> 1.35"
-gem "rubocop-rake", "~> 0.6"
-gem "rubocop-rspec", "~> 2.0"
+gem "rubocop"
+gem "rubocop-rake"
+gem "rubocop-rspec"
+
 gem "simplecov"
 gem "simplecov-lcov"
 

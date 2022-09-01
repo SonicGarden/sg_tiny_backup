@@ -79,7 +79,7 @@ If `SgTinyBackup.raise_on_error` is true, the backup task raises an error when t
 So your bug tracking service (like Bugsnag, Sentry, ...) can catch the error.
 
 ```ruby
-SgTinyBackup.raise_on_error = true
+SgTinyBackup.raise_on_error = true # true by default
 ```
 
 ## How it works

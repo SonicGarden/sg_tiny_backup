@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["shunichi@sonicgarden.jp"]
 
   spec.summary       = "Tiny backup"
-  spec.description   = "Backup postgresql db to S3"
+  spec.description   = "Backup postgresql database and logs to S3"
   spec.homepage      = "https://github.com/SonicGarden/sg_tiny_backup"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
