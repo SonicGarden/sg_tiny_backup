@@ -113,9 +113,10 @@ module SgTinyBackup
       pipe_statuses = pipe_status_str.delete("\n").split(":").sort
       pipe_statuses.each do |status|
         index, exit_code = status.split("|").map(&:to_i)
-        next if exit_code == 0
+        command = @commands[index]
+        next if command.success_codes.member?(exit_code)
 
-        @exit_code_errors << "`#{@commands[index].command}` returned exit code: #{exit_code}"
+        @exit_code_errors << "`#{command.command}` returned exit code: #{exit_code}"
       end
     end
 

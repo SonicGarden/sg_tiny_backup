@@ -19,6 +19,24 @@ RSpec.describe SgTinyBackup::Pipeline do
       expect(pipeline.error_messages).to be_empty
     end
 
+    it "succeeds with command exit code 1" do
+      pipeline = SgTinyBackup::Pipeline.new
+      pipeline << build_command_instance("#{test_command} name=first exit=1 stdout=first_output stderr=first_error", success_codes: [0, 1])
+      pipeline << build_command_instance("cat")
+
+      pipeline.run
+
+      expect(pipeline).to be_succeeded
+      expect(pipeline.stdout).to eq "first_output\n"
+      expect(pipeline.stderr).to eq "first_error\n"
+      expect(pipeline.warning_messages).to eq <<~END_OF_MESSAGE
+        STDERR messages:
+
+        first_error
+
+      END_OF_MESSAGE
+    end
+
     it "get stdout, stderr and error_messages" do
       pipeline = SgTinyBackup::Pipeline.new
       pipeline << build_command_instance("#{test_command} name=first exit=42 stdout=first_output stderr=first_error")
