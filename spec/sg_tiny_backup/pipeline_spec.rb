@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe SgTinyBackup::Pipeline do
-  let(:test_command) do
-    TestCommandHelper.test_command
-  end
-
   describe "#run" do
     it "succeeds" do
       pipeline = SgTinyBackup::Pipeline.new
@@ -21,7 +17,7 @@ RSpec.describe SgTinyBackup::Pipeline do
 
     it "succeeds with command exit code 1" do
       pipeline = SgTinyBackup::Pipeline.new
-      pipeline << build_command_instance("#{test_command} name=first exit=1 stdout=first_output stderr=first_error", success_codes: [0, 1])
+      pipeline << build_test_command_instance("name=first exit=1 stdout=first_output stderr=first_error", success_codes: [0, 1])
       pipeline << build_command_instance("cat")
 
       pipeline.run
@@ -39,8 +35,8 @@ RSpec.describe SgTinyBackup::Pipeline do
 
     it "get stdout, stderr and error_messages" do
       pipeline = SgTinyBackup::Pipeline.new
-      pipeline << build_command_instance("#{test_command} name=first exit=42 stdout=first_output stderr=first_error")
-      pipeline << build_command_instance("#{test_command} name=second exit=0 read_stdin stdout=second_output stderr=second_error")
+      pipeline << build_test_command_instance("name=first exit=42 stdout=first_output stderr=first_error")
+      pipeline << build_test_command_instance("name=second exit=0 read_stdin stdout=second_output stderr=second_error")
 
       pipeline.run
 
@@ -61,7 +57,7 @@ RSpec.describe SgTinyBackup::Pipeline do
 
         The following errors were returned:
 
-        `#{test_command} name=first exit=42 stdout=first_output stderr=first_error` returned exit code: 42
+        `#{TestCommandHelper.test_command} name=first exit=42 stdout=first_output stderr=first_error` returned exit code: 42
       END_OF_MESSAGE
     end
 
