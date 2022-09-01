@@ -23,9 +23,9 @@ module SgTinyBackup
       def success_codes
         if self.class.gnu_tar?
           # GNU tar's exit code 1 means that some files were changed while being archived.
-          [0, 1].freeze
+          [0, 1]
         else
-          [0].freeze
+          [0]
         end
       end
 

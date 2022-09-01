@@ -12,7 +12,7 @@ module SgTinyBackup
       end
 
       def success_codes
-        [0].freeze
+        [0]
       end
     end
   end
