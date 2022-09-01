@@ -17,3 +17,5 @@ module SgTinyBackup
     end
   end
 end
+
+SgTinyBackup.raise_on_error = true

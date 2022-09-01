@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "shellwords"
+require "open3"
 require_relative "base"
 
 module SgTinyBackup
@@ -17,6 +18,26 @@ module SgTinyBackup
           cmd << Shellwords.escape(path)
         end
         cmd.join(" ")
+      end
+
+      def success_codes
+        if self.class.gnu_tar?
+          # GNU tar's exit code 1 means that some files were changed while being archived.
+          # See https://www.gnu.org/software/tar/manual/html_section/Synopsis.html
+          [0, 1]
+        else
+          [0]
+        end
+      end
+
+      class << self
+        def gnu_tar?
+          unless defined?(@gnu_tar)
+            out, _err, status = Open3.capture3("tar --version")
+            @gnu_tar = status.success? && out.match?(/GNU/)
+          end
+          @gnu_tar
+        end
       end
     end
   end

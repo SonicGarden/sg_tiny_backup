@@ -10,6 +10,10 @@ module SgTinyBackup
       def env
         {}
       end
+
+      def success_codes
+        [0]
+      end
     end
   end
 end

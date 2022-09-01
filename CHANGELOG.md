@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [0.5.0] - 2022-09-01
+
+### Fixes
+- The backup rake task fails if GNU tar exits with code 1
+
+### Breaking changes
+- `SgTinyBackup.raise_on_error` is true by default
+
 ## [0.4.0] - 2022-08-27
 
 ### Features
