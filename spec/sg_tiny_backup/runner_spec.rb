@@ -145,9 +145,9 @@ RSpec.describe SgTinyBackup::Runner do
       allow(pipeline).to receive(:run)
       allow(pipeline).to receive(:succeeded?).and_return(false)
       allow(pipeline).to receive(:failed?).and_return(true)
-      allow(pipeline).to receive(:warning_messages).and_return("")
-      allow(pipeline).to receive(:error_messages).and_return("Error occured")
-      allow(pipeline).to receive(:strong_warning_messages).and_return("")
+      allow(pipeline).to receive(:warning_message).and_return("")
+      allow(pipeline).to receive(:error_message).and_return("Error occured")
+      allow(pipeline).to receive(:strong_warning_message).and_return("")
       pipeline
     end
     let(:runner) do

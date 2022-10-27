@@ -12,7 +12,7 @@ RSpec.describe SgTinyBackup::Pipeline do
       expect(pipeline).to be_succeeded
       expect(pipeline.stdout).to eq "Hello, World\n"
       expect(pipeline.stderr).to be_empty
-      expect(pipeline.error_messages).to be_empty
+      expect(pipeline.error_message).to be_empty
     end
 
     it "succeeds with command exit code 1" do
@@ -25,7 +25,7 @@ RSpec.describe SgTinyBackup::Pipeline do
       expect(pipeline).to be_succeeded
       expect(pipeline.stdout).to eq "first_output\n"
       expect(pipeline.stderr).to eq "first_error\n"
-      expect(pipeline.warning_messages).to eq <<~END_OF_MESSAGE
+      expect(pipeline.warning_message).to eq <<~END_OF_MESSAGE
         STDERR messages:
 
         first_error
@@ -33,7 +33,7 @@ RSpec.describe SgTinyBackup::Pipeline do
       END_OF_MESSAGE
     end
 
-    it "get stdout, stderr and error_messages" do
+    it "get stdout, stderr and error_message" do
       pipeline = SgTinyBackup::Pipeline.new
       pipeline << build_test_command_instance("name=first exit=42 stdout=first_output stderr=first_error")
       pipeline << build_test_command_instance("name=second exit=0 read_stdin stdout=second_output stderr=second_error")
@@ -49,7 +49,7 @@ RSpec.describe SgTinyBackup::Pipeline do
         first_error
         second_error
       END_OF_MESSAGE
-      expect(pipeline.error_messages).to eq <<~END_OF_MESSAGE
+      expect(pipeline.error_message).to eq <<~END_OF_MESSAGE
         STDERR messages:
 
         first_error
@@ -81,7 +81,7 @@ RSpec.describe SgTinyBackup::Pipeline do
 
         `a_command_that_does_not_exist` returned exit code: 127
       END_OF_MESSAGE
-      expect(pipeline.error_messages).to match Regexp.new(regex_str)
+      expect(pipeline.error_message).to match Regexp.new(regex_str)
     end
   end
 end

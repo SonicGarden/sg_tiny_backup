@@ -22,10 +22,10 @@ module SgTinyBackup
 
     def run
       pipeline.run
-      output_warning(pipeline.warning_messages)
-      notify_error(pipeline.error_messages) if pipeline.failed?
-      unless (strong_warning_messages = pipeline.strong_warning_messages).empty?
-        notify_warning(strong_warning_messages)
+      output_warning(pipeline.warning_message)
+      notify_error(pipeline.error_message) if pipeline.failed?
+      unless (strong_warning_message = pipeline.strong_warning_message).empty?
+        notify_warning(strong_warning_message)
       end
       pipeline.succeeded?
     end

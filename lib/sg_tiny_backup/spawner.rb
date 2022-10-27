@@ -11,7 +11,7 @@ module SgTinyBackup
       @commands = commands
       @env = env
       @output_path = output_path
-      @stderr_messages = nil
+      @stderr_message = nil
       @exit_code_errors = []
     end
 
@@ -19,8 +19,8 @@ module SgTinyBackup
       exit_code_errors.empty?
     end
 
-    def stderr_messages
-      @stderr_messages ||=
+    def stderr_message
+      @stderr_message ||=
         if @stderr.empty?
           ""
         else
@@ -32,7 +32,7 @@ module SgTinyBackup
         end
     end
 
-    def exit_code_error_messages
+    def exit_code_error_message
       if succeeded?
         ""
       else
