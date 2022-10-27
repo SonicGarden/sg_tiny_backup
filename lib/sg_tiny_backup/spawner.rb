@@ -56,6 +56,8 @@ module SgTinyBackup
       raise SpawnError.new("Pipeline failed to execute", e)
     end
 
+    private
+
     def spawn_pipeline_command
       opts = {}
       out_r, out_w = IO.pipe
@@ -75,6 +77,12 @@ module SgTinyBackup
       yield pid, out_r, err_r, status_r
     end
 
+    # pipe_status_str format:
+    #   {command index}|{exit status}:\n{command index}|{exit status}:\n
+    #
+    # For example, "0|2:\n1|0:\n" means:
+    # * command 0 exited with status 2
+    # * command 1 exited with status 0
     def parse_pipe_status(pipe_status_str)
       @exit_code_errors = []
       pipe_statuses = pipe_status_str.delete("\n").split(":").sort
@@ -87,13 +95,18 @@ module SgTinyBackup
       end
     end
 
+    # Pipeline command example:
+    #
+    #   { tar -c log/production.log log/production.log.1 ; echo "0|$?:" >&3 ; } | { gzip ; echo "1|$?:" >&3 ; } > log.tar.gz
+    #
+    # This output each command's exit status to file descriptor 3.
     def pipeline_command
       parts = []
       @commands.each_with_index do |command, index|
         parts << %({ #{command.command} ; echo "#{index}|$?:" >&3 ; })
       end
       command = parts.join(" | ")
-      command += "> #{Shellwords.escape(@output_path)}" if @output_path
+      command += " > #{Shellwords.escape(@output_path)}" if @output_path
       command
     end
   end
