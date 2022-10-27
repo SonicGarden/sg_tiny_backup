@@ -2,14 +2,14 @@
 
 RSpec.describe SgTinyBackup::Runner do
   describe "#plain_commands" do
-    after do
-      FileUtils.rm_rf "tmp/log"
-    end
-
     before do
       FileUtils.mkdir_p "tmp/log"
       FileUtils.touch "tmp/log/production.log"
       FileUtils.touch "tmp/log/production.log.1"
+    end
+
+    after do
+      FileUtils.rm_rf "tmp/log"
     end
 
     it "generates database backup command" do
