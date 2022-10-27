@@ -1,7 +1,7 @@
 ## [Unreleased]
 
 ## [0.6.0] - 2022-10-27
-- Invoke tar command with only existing files and raise BackupWarning after the backup finished.
+- If log files are missing, invoke tar command with only existing files and raise BackupWarning after the backup finished.
 
 ## [0.5.0] - 2022-09-01
 
