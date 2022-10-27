@@ -42,6 +42,10 @@ module SgTinyBackup
       [stderr_messages, exit_code_error_messages].join
     end
 
+    def strong_warning_messages
+      @commands.filter_map(&:strong_warning_message).join("\n")
+    end
+
     def warning_messages
       if succeeded? && !stderr_messages.empty?
         stderr_messages

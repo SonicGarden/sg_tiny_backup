@@ -10,14 +10,20 @@ module SgTinyBackup
       def initialize(paths: [])
         super()
         @paths = paths
+        check_missing_paths
       end
 
       def command
-        cmd = ["tar -c"]
-        @paths.map do |path|
-          cmd << Shellwords.escape(path)
+        if existing_paths.empty?
+          # Create empty tar archive.
+          "tar -c -T /dev/null"
+        else
+          cmd = ["tar -c"]
+          existing_paths.map do |path|
+            cmd << Shellwords.escape(path)
+          end
+          cmd.join(" ")
         end
-        cmd.join(" ")
       end
 
       def success_codes
@@ -28,6 +34,22 @@ module SgTinyBackup
         else
           [0]
         end
+      end
+
+      def strong_warning_message
+        unless @missing_paths.empty?
+          "tar: missing files: #{@missing_paths.join(", ")}"
+        end
+      end
+
+      private
+
+      def check_missing_paths
+        @missing_paths = @paths.reject { |path| File.file?(path) || File.directory?(path) }
+      end
+
+      def existing_paths
+        @existing_paths ||= @paths - @missing_paths
       end
 
       class << self
