@@ -58,8 +58,7 @@ RSpec.describe "Backup database" do # rubocop:disable RSpec/MultipleMemoizedHelp
 
   it "creates encyrpted dump and decrypts it" do
     config = SgTinyBackup::Config.new(
-      s3: {
-      },
+      s3: {},
       pg_dump: {
         "extra_options" => "-xc --if-exists --encoding=utf8",
       },

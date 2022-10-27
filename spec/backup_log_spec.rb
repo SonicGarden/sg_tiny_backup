@@ -18,8 +18,7 @@ RSpec.describe "Backup log" do
   context "without missing files" do
     it "creates log backup" do
       config = SgTinyBackup::Config.new(
-        s3: {
-        },
+        s3: {},
         log: {
           "files" => [
             "spec/test_data/log/test.log",
@@ -32,6 +31,7 @@ RSpec.describe "Backup log" do
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
       runner.run
 
+      puts "tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}"
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log")).to eq "Hello, World!\n"
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log.1")).to eq "Goodbye, World!\n"
@@ -41,8 +41,7 @@ RSpec.describe "Backup log" do
   context "with missing files" do
     it "creates log backup and raise error" do
       config = SgTinyBackup::Config.new(
-        s3: {
-        },
+        s3: {},
         log: {
           "files" => [
             "spec/test_data/log/test.log",
@@ -65,8 +64,7 @@ RSpec.describe "Backup log" do
   context "with no files" do
     it "creates empty log backup and raise error" do
       config = SgTinyBackup::Config.new(
-        s3: {
-        },
+        s3: {},
         log: {
           "files" => [
             "spec/test_data/log/test.log.missing1",

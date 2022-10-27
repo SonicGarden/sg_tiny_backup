@@ -84,18 +84,4 @@ RSpec.describe SgTinyBackup::Pipeline do
       expect(pipeline.error_messages).to match Regexp.new(regex_str)
     end
   end
-
-  describe "Spawn error" do
-    it "raises SpawnError" do
-      pipeline = SgTinyBackup::Pipeline.new
-      pipeline << build_command_instance("echo Hello, World")
-      pipeline << build_command_instance("cat")
-
-      allow(pipeline).to receive(:spawn_pipeline_command).and_raise(StandardError.new("Test error"))
-
-      expect do
-        pipeline.run
-      end.to raise_error(SgTinyBackup::SpawnError, /StandardError: Test error/)
-    end
-  end
 end
