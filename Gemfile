@@ -17,3 +17,4 @@ gem "simplecov"
 gem "simplecov-lcov"
 
 gem "debug"
+gem "solargraph"

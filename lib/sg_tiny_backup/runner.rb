@@ -22,8 +22,11 @@ module SgTinyBackup
 
     def run
       pipeline.run
-      output_warning(pipeline.warning_messages)
-      output_error(pipeline.error_messages) if pipeline.failed?
+      handle_warning(pipeline.warning_message)
+      handle_error(pipeline.error_message) if pipeline.failed?
+      unless (strong_warning_message = pipeline.strong_warning_message).empty?
+        handle_strong_warning(strong_warning_message)
+      end
       pipeline.succeeded?
     end
 
@@ -63,15 +66,20 @@ module SgTinyBackup
         end
     end
 
-    def output_warning(message)
+    def handle_warning(message)
       return if message.empty?
 
       SgTinyBackup.logger.warn message
     end
 
-    def output_error(message)
+    def handle_error(message)
       SgTinyBackup.logger.error message
       raise BackupFailed, message if SgTinyBackup.raise_on_error
+    end
+
+    def handle_strong_warning(message)
+      SgTinyBackup.logger.warn message
+      raise BackupWarning, message if SgTinyBackup.raise_on_error
     end
   end
 end

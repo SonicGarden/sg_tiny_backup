@@ -2,6 +2,16 @@
 
 RSpec.describe SgTinyBackup::Runner do
   describe "#plain_commands" do
+    before do
+      FileUtils.mkdir_p "tmp/log"
+      FileUtils.touch "tmp/log/production.log"
+      FileUtils.touch "tmp/log/production.log.1"
+    end
+
+    after do
+      FileUtils.rm_rf "tmp/log"
+    end
+
     it "generates database backup command" do
       yaml = <<~YAML
         s3:
@@ -45,14 +55,14 @@ RSpec.describe SgTinyBackup::Runner do
             secret_access_key: MY_SECRET_ACCESS_KEY
         log:
           files:
-            - log/production.log
-            - log/production.log.1
+            - tmp/log/production.log
+            - tmp/log/production.log.1
       YAML
 
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "01234567")
       commands = runner.plain_commands
-      expect(commands[0]).to eq "tar -c log/production.log log/production.log.1"
+      expect(commands[0]).to eq "tar -c tmp/log/production.log tmp/log/production.log.1"
       expect(commands[1]).to eq "gzip"
       expect(commands[2]).to eq "aws s3 cp - s3://my_bucket/backup/log_01234567.tar.gz"
     end
@@ -135,8 +145,9 @@ RSpec.describe SgTinyBackup::Runner do
       allow(pipeline).to receive(:run)
       allow(pipeline).to receive(:succeeded?).and_return(false)
       allow(pipeline).to receive(:failed?).and_return(true)
-      allow(pipeline).to receive(:warning_messages).and_return("")
-      allow(pipeline).to receive(:error_messages).and_return("Error occured")
+      allow(pipeline).to receive(:warning_message).and_return("")
+      allow(pipeline).to receive(:error_message).and_return("Error occured")
+      allow(pipeline).to receive(:strong_warning_message).and_return("")
       pipeline
     end
     let(:runner) do

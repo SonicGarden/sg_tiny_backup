@@ -14,6 +14,10 @@ module SgTinyBackup
       def success_codes
         [0]
       end
+
+      def strong_warning_message
+        nil
+      end
     end
   end
 end

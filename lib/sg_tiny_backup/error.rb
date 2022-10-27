@@ -7,6 +7,9 @@ module SgTinyBackup
   class BackupFailed < Error
   end
 
+  class BackupWarning < Error
+  end
+
   class SpawnError < Error
     def initialize(msg, inner_error)
       inner_message = inner_error.message
