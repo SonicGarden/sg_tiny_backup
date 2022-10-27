@@ -15,7 +15,7 @@ RSpec.describe "Backup log" do
     FileUtils.rm_rf output_dir
   end
 
-  context 'without missing files' do
+  context "without missing files" do
     it "creates log backup" do
       config = SgTinyBackup::Config.new(
         s3: {
@@ -38,7 +38,7 @@ RSpec.describe "Backup log" do
     end
   end
 
-  context 'with missing files' do
+  context "with missing files" do
     it "creates log backup and raise error" do
       config = SgTinyBackup::Config.new(
         s3: {
@@ -53,16 +53,16 @@ RSpec.describe "Backup log" do
         db: {}
       )
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
-      expect {
+      expect do
         runner.run
-      }.to raise_error SgTinyBackup::BackupWarning, 'tar: missing files: spec/test_data/log/test.log.missing'
+      end.to raise_error SgTinyBackup::BackupWarning, "tar: missing files: spec/test_data/log/test.log.missing"
 
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log")).to eq "Hello, World!\n"
     end
   end
 
-  context 'with no files' do
+  context "with no files" do
     it "creates empty log backup and raise error" do
       config = SgTinyBackup::Config.new(
         s3: {
@@ -77,12 +77,12 @@ RSpec.describe "Backup log" do
         db: {}
       )
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
-      expect {
+      expect do
         runner.run
-      }.to raise_error SgTinyBackup::BackupWarning, 'tar: missing files: spec/test_data/log/test.log.missing1, spec/test_data/log/test.log.missing2'
+      end.to raise_error SgTinyBackup::BackupWarning, "tar: missing files: spec/test_data/log/test.log.missing1, spec/test_data/log/test.log.missing2"
 
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
-      expect(Dir.entries(extracted_dir)).to contain_exactly('.', '..')
+      expect(Dir.entries(extracted_dir)).to contain_exactly(".", "..")
     end
   end
 end

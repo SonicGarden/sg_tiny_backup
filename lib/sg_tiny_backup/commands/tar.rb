@@ -37,9 +37,7 @@ module SgTinyBackup
       end
 
       def strong_warning_message
-        unless @missing_paths.empty?
-          "tar: missing files: #{@missing_paths.join(", ")}"
-        end
+        "tar: missing files: #{@missing_paths.join(", ")}" unless @missing_paths.empty?
       end
 
       private

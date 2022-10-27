@@ -2,6 +2,16 @@
 
 RSpec.describe SgTinyBackup::Runner do
   describe "#plain_commands" do
+    after do
+      FileUtils.rm_rf "tmp/log"
+    end
+
+    before do
+      FileUtils.mkdir_p "tmp/log"
+      FileUtils.touch "tmp/log/production.log"
+      FileUtils.touch "tmp/log/production.log.1"
+    end
+
     it "generates database backup command" do
       yaml = <<~YAML
         s3:
@@ -33,16 +43,6 @@ RSpec.describe SgTinyBackup::Runner do
       expect(runner.piped_command).to eq commands.join(" | ")
       expect(runner.s3_destination_url).to eq "s3://my_bucket/backup/database_01234567.sql.gz.enc"
       expect(runner.base_filename).to eq "01234567.sql.gz.enc"
-    end
-
-    before do
-      FileUtils.mkdir_p "tmp/log"
-      FileUtils.touch "tmp/log/production.log"
-      FileUtils.touch "tmp/log/production.log.1"
-    end
-
-    after do
-      FileUtils.rm_rf "tmp/log"
     end
 
     it "generates log backup command" do
