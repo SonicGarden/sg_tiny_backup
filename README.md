@@ -1,12 +1,13 @@
 # SgTinyBackup
 
-Simply backup PostgreSQL database and logs to S3.
+Simply backup PostgreSQL/MySQL database and logs to S3.
 
 ## Dependencies
 
 This gem needs the following softwares.
 
 * [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+* [mysqldump](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
 * [OpenSSL](https://www.openssl.org/)
 * [AWS CLI](https://aws.amazon.com/cli/)
 
@@ -15,7 +16,7 @@ This gem needs the following softwares.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sg_tiny_backup', git: 'https://github.com/SonicGarden/sg_tiny_backup', tag: 'v0.4.0'
+gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.7.0'
 ```
 
 ## Usage
