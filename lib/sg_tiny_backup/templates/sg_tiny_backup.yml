@@ -29,8 +29,11 @@ log:
     - log/production.log.1
 pg_dump:
   extra_options: -xc --if-exists --encoding=utf8
+mysqldump:
+  extra_options: --single-transaction --quick --hex-blob
 # The following settings is not required since database config can be loaded from config/database.yml in typical rails application.
 # db:
+#   adapter: postgresql
 #   host: localhost
 #   port: 5432
 #   username: postgres

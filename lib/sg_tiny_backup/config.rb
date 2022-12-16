@@ -7,6 +7,7 @@ require "fileutils"
 module SgTinyBackup
   class Config
     KEY_PG_DUMP = "pg_dump"
+    KEY_MYSQLDUMP = "mysqldump"
     KEY_S3 = "s3"
     KEY_DB = "db"
     KEY_ENCRYPTION_KEY = "encryption_key"
@@ -14,12 +15,13 @@ module SgTinyBackup
     KEY_LOG = "log"
     KEY_FILES = "files"
 
-    attr_reader :s3, :encryption_key, :pg_dump, :db
+    attr_reader :s3, :encryption_key, :pg_dump, :mysqldump, :db
 
-    def initialize(s3:, encryption_key:, pg_dump: nil, db: nil, log: nil)
+    def initialize(s3:, encryption_key:, pg_dump: nil, mysqldump: nil, db: nil, log: nil) # rubocop:disable Metrics/ParameterLists
       @s3 = s3
       @encryption_key = encryption_key
       @pg_dump = pg_dump || {}
+      @mysqldump = mysqldump
       @db = db || self.class.rails_db_config
       @log = log || {}
     end
@@ -52,6 +54,7 @@ module SgTinyBackup
           encryption_key: yaml[KEY_ENCRYPTION_KEY],
           db: yaml[KEY_DB],
           pg_dump: yaml[KEY_PG_DUMP],
+          mysqldump: yaml[KEY_MYSQLDUMP],
           log: yaml[KEY_LOG]
         )
       end
