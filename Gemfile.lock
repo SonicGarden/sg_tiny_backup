@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sg_tiny_backup (0.6.0)
+    sg_tiny_backup (0.7.0)
 
 GEM
   remote: https://rubygems.org/
