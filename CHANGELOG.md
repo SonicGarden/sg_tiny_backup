@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Breaking changes
+- `SgTinyBackup.raise_on_strong_warning` is true by default
+
 ## [0.6.0] - 2022-10-27
 - If log files are missing, invoke tar command with only existing files and raise BackupWarning after the backup finished.
 

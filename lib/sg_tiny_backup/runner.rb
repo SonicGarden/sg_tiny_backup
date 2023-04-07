@@ -79,7 +79,7 @@ module SgTinyBackup
 
     def handle_strong_warning(message)
       SgTinyBackup.logger.warn message
-      raise BackupWarning, message if SgTinyBackup.raise_on_error
+      raise BackupWarning, message if SgTinyBackup.raise_on_strong_warning
     end
   end
 end

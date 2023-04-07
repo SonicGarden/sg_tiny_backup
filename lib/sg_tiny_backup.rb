@@ -10,6 +10,7 @@ require "sg_tiny_backup/railtie" if defined?(Rails)
 module SgTinyBackup
   class << self
     attr_accessor :raise_on_error
+    attr_accessor :raise_on_strong_warning
     attr_writer :logger
 
     def logger
@@ -19,3 +20,4 @@ module SgTinyBackup
 end
 
 SgTinyBackup.raise_on_error = true
+SgTinyBackup.raise_on_strong_warning = true
