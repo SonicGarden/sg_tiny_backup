@@ -9,13 +9,20 @@ require "sg_tiny_backup/railtie" if defined?(Rails)
 
 module SgTinyBackup
   class << self
-    attr_accessor :raise_on_error
+    attr_accessor :error_handler
     attr_writer :logger
+    attr_reader :raise_on_error
 
     def logger
       @logger ||= Logger.new(STDOUT)
     end
+
+    def raise_on_error=(value)
+      ActiveSupport::Deprecation.warn("Use SgTinyBackup.error_handler")
+      @raise_on_error = value
+      SgTinyBackup.error_handler = value ? ->(error) { raise error } : nil
+    end
   end
 end
 
-SgTinyBackup.raise_on_error = true
+SgTinyBackup.error_handler = ->(error) { raise error }

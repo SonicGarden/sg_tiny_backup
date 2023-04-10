@@ -74,12 +74,12 @@ module SgTinyBackup
 
     def handle_error(message)
       SgTinyBackup.logger.error message
-      raise BackupFailed, message if SgTinyBackup.raise_on_error
+      SgTinyBackup.error_handler&.call(BackupFailed.new(message))
     end
 
     def handle_strong_warning(message)
       SgTinyBackup.logger.warn message
-      raise BackupWarning, message if SgTinyBackup.raise_on_error
+      SgTinyBackup.error_handler&.call(BackupWarning.new(message))
     end
   end
 end

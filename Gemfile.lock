@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sg_tiny_backup (0.6.0)
+    sg_tiny_backup (0.7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -24,6 +24,8 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
+    nokogiri (1.13.9-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
@@ -98,6 +100,7 @@ GEM
       webrick (~> 1.7.0)
 
 PLATFORMS
+  x86_64-darwin-19
   x86_64-linux
 
 DEPENDENCIES

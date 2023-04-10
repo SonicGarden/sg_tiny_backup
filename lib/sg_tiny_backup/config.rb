@@ -71,11 +71,6 @@ module SgTinyBackup
         io.write(template)
       end
 
-      def generate_template_file(path)
-        template_path = File.expand_path("./templates/sg_tiny_backup.yml", __dir__)
-        FileUtils.cp(template_path, path)
-      end
-
       def rails_db_config
         return unless defined?(Rails)
 

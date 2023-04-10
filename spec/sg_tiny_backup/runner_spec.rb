@@ -208,7 +208,7 @@ RSpec.describe SgTinyBackup::Runner do
     end
   end
 
-  describe "raise_on_error" do
+  describe "error_handler" do
     let(:pipeline) do
       pipeline = instance_double(SgTinyBackup::Pipeline)
       allow(pipeline).to receive(:run)
@@ -244,11 +244,7 @@ RSpec.describe SgTinyBackup::Runner do
       runner
     end
 
-    context "when SgTinyBackup.raise_on_error is true" do
-      before do
-        allow(SgTinyBackup).to receive(:raise_on_error).and_return(true)
-      end
-
+    context "when SgTinyBackup.error_handler is default" do
       it "raises error" do
         logger = instance_spy(Logger)
         allow(SgTinyBackup).to receive(:logger).and_return(logger)
@@ -261,9 +257,9 @@ RSpec.describe SgTinyBackup::Runner do
       end
     end
 
-    context "when SgTinyBackup.raise_on_error is false" do
+    context "when SgTinyBackup.error_handler is nil" do
       before do
-        allow(SgTinyBackup).to receive(:raise_on_error).and_return(false)
+        allow(SgTinyBackup).to receive(:error_handler).and_return(nil)
       end
 
       it "does not raise error" do

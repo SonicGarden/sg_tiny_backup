@@ -1,4 +1,6 @@
 ## [Unreleased]
+- Add `SgTinyBackup.error_handler` config
+- Deprecation `SgTinyBackup.raise_on_error`
 
 ## [0.6.0] - 2022-10-27
 - If log files are missing, invoke tar command with only existing files and raise BackupWarning after the backup finished.

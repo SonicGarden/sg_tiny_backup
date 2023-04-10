@@ -25,7 +25,7 @@ gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.7.0'
 You should modify it according to the comments in it.
 
 ```
-bundle exec rake sg_tiny_backup:generate
+bin/rails g sg_tiny_backup
 ```
 
 ### Backup your database to S3
@@ -76,11 +76,11 @@ SgTinyBackup.logger = Rails.logger
 
 ## Error reporting
 
-If `SgTinyBackup.raise_on_error` is true, the backup task raises an error when the backup command fails.
+If `SgTinyBackup.error_handler` is default, the backup task raises an error when the backup command fails.
 So your bug tracking service (like Bugsnag, Sentry, ...) can catch the error.
 
 ```ruby
-SgTinyBackup.raise_on_error = true # true by default
+SgTinyBackup.error_handler = ->(error) { raise error } # default
 ```
 
 ## How it works
