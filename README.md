@@ -16,7 +16,7 @@ This gem needs the following softwares.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.7.0'
+gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.8.0'
 ```
 
 ## Usage
