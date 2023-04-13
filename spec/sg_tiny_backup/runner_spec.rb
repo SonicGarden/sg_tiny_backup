@@ -91,6 +91,7 @@ RSpec.describe SgTinyBackup::Runner do
         log:
           files:
             - tmp/log/production.log
+          optional_files:
             - tmp/log/production.log.1
       YAML
 
@@ -216,7 +217,7 @@ RSpec.describe SgTinyBackup::Runner do
       allow(pipeline).to receive(:failed?).and_return(true)
       allow(pipeline).to receive(:warning_message).and_return("")
       allow(pipeline).to receive(:error_message).and_return("Error occured")
-      allow(pipeline).to receive(:strong_warning_message).and_return("")
+      allow(pipeline).to receive(:warning_message).and_return("")
       pipeline
     end
     let(:runner) do

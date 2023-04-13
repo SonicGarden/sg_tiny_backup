@@ -26,6 +26,7 @@ encryption_key: <%= ENV.fetch('ENCRYPTION_KEY') %>
 log:
   files:
     - log/production.log
+  optional_files:
     - log/production.log.1
 pg_dump:
   extra_options: -xc --if-exists --encoding=utf8

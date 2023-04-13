@@ -15,7 +15,7 @@ module SgTinyBackup
         [0]
       end
 
-      def strong_warning_message
+      def warning_message
         nil
       end
     end

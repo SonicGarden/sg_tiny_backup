@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Breaking changes
+- If log files in `log > files` field are missing, the gem raise BackupFailed.
+- If log files are optional, use `optional_files` as YAML key instead of `files`.
+
 ## [0.6.0] - 2022-10-27
 - If log files are missing, invoke tar command with only existing files and raise BackupWarning after the backup finished.
 

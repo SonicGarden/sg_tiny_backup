@@ -31,15 +31,38 @@ RSpec.describe "Backup log" do
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
       runner.run
 
-      puts "tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}"
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log")).to eq "Hello, World!\n"
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log.1")).to eq "Goodbye, World!\n"
     end
   end
 
-  context "with missing files" do
-    it "creates log backup and raise error" do
+  context "with existing optional files" do
+    it "creates log backup without error" do
+      config = SgTinyBackup::Config.new(
+        s3: {},
+        log: {
+          "files" => [
+            "spec/test_data/log/test.log",
+          ],
+          "optional_files" => [
+            "spec/test_data/log/test.log.1",
+          ],
+        },
+        encryption_key: "dummy",
+        db: {}
+      )
+      runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
+      runner.run
+
+      system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
+      expect(File.read("#{extracted_dir}/spec/test_data/log/test.log")).to eq "Hello, World!\n"
+      expect(File.read("#{extracted_dir}/spec/test_data/log/test.log.1")).to eq "Goodbye, World!\n"
+    end
+  end
+
+  context "with missing required files" do
+    it "raises error" do
       config = SgTinyBackup::Config.new(
         s3: {},
         log: {
@@ -54,7 +77,35 @@ RSpec.describe "Backup log" do
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
       expect do
         runner.run
-      end.to raise_error SgTinyBackup::BackupWarning, "tar: missing files: spec/test_data/log/test.log.missing"
+      end.to raise_error SgTinyBackup::BackupFailed
+    end
+  end
+
+  context "with missing optional files" do
+    let(:log) { StringIO.new }
+
+    before do
+      allow(SgTinyBackup).to receive(:logger).and_return(Logger.new(log))
+    end
+
+    it "creates log backup without error" do
+      config = SgTinyBackup::Config.new(
+        s3: {},
+        log: {
+          "files" => [
+            "spec/test_data/log/test.log",
+          ],
+          "optional_files" => [
+            "spec/test_data/log/test.log.missing",
+          ],
+        },
+        encryption_key: "dummy",
+        db: {}
+      )
+      runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
+      runner.run
+
+      expect(log.string).to include "WARN -- : tar: missing files: spec/test_data/log/test.log.missing\n"
 
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
       expect(File.read("#{extracted_dir}/spec/test_data/log/test.log")).to eq "Hello, World!\n"
@@ -62,11 +113,17 @@ RSpec.describe "Backup log" do
   end
 
   context "with no files" do
+    let(:log) { StringIO.new }
+
+    before do
+      allow(SgTinyBackup).to receive(:logger).and_return(Logger.new(log))
+    end
+
     it "creates empty log backup and raise error" do
       config = SgTinyBackup::Config.new(
         s3: {},
         log: {
-          "files" => [
+          "optional_files" => [
             "spec/test_data/log/test.log.missing1",
             "spec/test_data/log/test.log.missing2",
           ],
@@ -75,9 +132,9 @@ RSpec.describe "Backup log" do
         db: {}
       )
       runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "#{output_dir}/test_log", local: true)
-      expect do
-        runner.run
-      end.to raise_error SgTinyBackup::BackupWarning, "tar: missing files: spec/test_data/log/test.log.missing1, spec/test_data/log/test.log.missing2"
+      runner.run
+
+      expect(log.string).to include "WARN -- : tar: missing files: spec/test_data/log/test.log.missing1, spec/test_data/log/test.log.missing2\n"
 
       system("tar -xf #{output_dir}/test_log.tar.gz -C #{extracted_dir}", exception: true)
       expect(Dir.entries(extracted_dir)).to contain_exactly(".", "..")

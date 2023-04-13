@@ -43,19 +43,17 @@ module SgTinyBackup
       [@spawner.stderr_message, @spawner.exit_code_error_message].join
     end
 
-    def strong_warning_message
-      @commands.filter_map(&:strong_warning_message).join("\n")
-    end
-
     def warning_message
-      if succeeded? && !@spawner.stderr_message.empty?
-        @spawner.stderr_message
-      else
-        ""
-      end
+      messages = [commands_warning_message]
+      messages << @spawner.stderr_message if succeeded? && !@spawner.stderr_message.empty?
+      messages.reject { |str| str.nil? || str.empty? }.join("\n")
     end
 
     private
+
+    def commands_warning_message
+      @commands.filter_map(&:warning_message).join("\n")
+    end
 
     def build_spawner
       Spawner.new(commands: @commands, env: env, output_path: @output_path)

@@ -7,19 +7,19 @@ require_relative "base"
 module SgTinyBackup
   module Commands
     class Tar < Base
-      def initialize(paths: [])
+      def initialize(paths: [], optional_paths: [])
         super()
         @paths = paths
-        check_missing_paths
+        @optional_paths = optional_paths
       end
 
       def command
-        if existing_paths.empty?
+        if target_file_paths.empty?
           # Create empty tar archive.
           "tar -c -T /dev/null"
         else
           cmd = ["tar -c"]
-          existing_paths.map do |path|
+          target_file_paths.map do |path|
             cmd << Shellwords.escape(path)
           end
           cmd.join(" ")
@@ -36,18 +36,22 @@ module SgTinyBackup
         end
       end
 
-      def strong_warning_message
-        "tar: missing files: #{@missing_paths.join(", ")}" unless @missing_paths.empty?
+      def warning_message
+        "tar: missing files: #{missing_optinal_file_paths.join(", ")}" unless missing_optinal_file_paths.empty?
       end
 
       private
 
-      def check_missing_paths
-        @missing_paths = @paths.reject { |path| File.file?(path) || File.directory?(path) }
+      def existing_optional_file_paths
+        @existing_optional_file_paths ||= @optional_paths.select { |path| File.file?(path) || File.directory?(path) }
       end
 
-      def existing_paths
-        @existing_paths ||= @paths - @missing_paths
+      def missing_optinal_file_paths
+        @missing_optinal_file_paths ||= @optional_paths - existing_optional_file_paths
+      end
+
+      def target_file_paths
+        @target_file_paths ||= @paths + existing_optional_file_paths
       end
 
       class << self

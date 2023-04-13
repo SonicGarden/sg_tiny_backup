@@ -14,6 +14,7 @@ module SgTinyBackup
     KEY_EXPECTED_UPLOAD_SIZE = "expected_upload_size"
     KEY_LOG = "log"
     KEY_FILES = "files"
+    KEY_OPTIONAL_FILES = "optional_files"
 
     attr_reader :s3, :encryption_key, :pg_dump, :mysqldump, :db
 
@@ -28,6 +29,10 @@ module SgTinyBackup
 
     def log_file_paths
       @log[KEY_FILES] || []
+    end
+
+    def optional_log_file_paths
+      @log[KEY_OPTIONAL_FILES] || []
     end
 
     class << self
@@ -63,12 +68,6 @@ module SgTinyBackup
         File.open(path, "r") do |f|
           read(f)
         end
-      end
-
-      def write_template(io)
-        template = File.read(template_path)
-        template.gsub!("${ENCRYPTION_KEY}", SecureRandom.hex(64))
-        io.write(template)
       end
 
       def generate_template_file(path)
