@@ -69,6 +69,9 @@ module SgTinyBackup
       status_r, status_w = IO.pipe
       opts[3] = status_w
 
+      SgTinyBackup.logger.info "Spawning command: #{pipeline_command}"
+      SgTinyBackup.logger.info "env keys: #{@env.keys.join(",")}"
+
       pid = spawn(@env, pipeline_command, opts)
       out_w.close
       err_w.close
