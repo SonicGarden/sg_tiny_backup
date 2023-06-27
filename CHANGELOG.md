@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [0.9.0] - 2023-06-27
+- Read config/database.yml values as ERB.
+
 ## [0.8.0] - 2023-04-13
 ### Breaking changes
 - If log files in `log > files` field are missing, the gem raise BackupFailed.
