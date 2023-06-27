@@ -81,6 +81,7 @@ module SgTinyBackup
         db_config = File.open(Rails.root.join("config", "database.yml"), "r") do |f|
           YAML.safe_load(f, permitted_classes: [], permitted_symbols: [], aliases: true)
         end
+        db_config = resolve_erb(db_config)
         db_config[Rails.env]
       end
     end
