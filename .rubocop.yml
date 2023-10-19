@@ -54,6 +54,9 @@ Metrics/BlockLength:
   Enabled: true
   Max: 100
 
+Metrics/AbcSize:
+  Enabled: false
+
 RSpec/DescribeClass:
   Enabled: false
 
@@ -65,3 +68,4 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
