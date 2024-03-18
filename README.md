@@ -6,22 +6,23 @@ Simply backup PostgreSQL/MySQL database and logs to S3.
 
 This gem needs the following softwares.
 
-* [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
-* [mysqldump](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
-* [OpenSSL](https://www.openssl.org/)
-* [AWS CLI](https://aws.amazon.com/cli/)
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [mysqldump](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
+- [OpenSSL](https://www.openssl.org/)
+- [AWS CLI](https://aws.amazon.com/cli/)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.9.0'
+gem 'sg_tiny_backup', github: 'SonicGarden/sg_tiny_backup', tag: 'v0.10.0'
 ```
 
 ## Usage
 
 ### Generate your config file to `config/sg_tiny_backup.yml`
+
 You should modify it according to the comments in it.
 
 ```
@@ -84,6 +85,7 @@ SgTinyBackup.raise_on_error = true # true by default
 ```
 
 ## How it works
+
 This gem simply generates a command line string like the following and runs it.
 The credentials are passed to each command by environment variables.
 
