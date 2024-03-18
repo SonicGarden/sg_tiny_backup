@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "yaml"
-require "erb"
-require "fileutils"
-
 module SgTinyBackup
   class Config
     KEY_PG_DUMP = "pg_dump"
@@ -36,24 +32,8 @@ module SgTinyBackup
     end
 
     class << self
-      def resolve_erb(value)
-        case value
-        when Hash
-          value.transform_values do |v|
-            resolve_erb(v)
-          end
-        when Array
-          value.map { |v| resolve_erb(v) }
-        when String
-          ERB.new(value).result
-        else
-          value
-        end
-      end
-
       def read(io)
-        yaml = YAML.safe_load(io, permitted_classes: [], permitted_symbols: [], aliases: true)
-        yaml = resolve_erb(yaml)
+        yaml = Utils.load_yaml_with_erb(io)
         Config.new(
           s3: yaml[KEY_S3],
           encryption_key: yaml[KEY_ENCRYPTION_KEY],
@@ -79,9 +59,8 @@ module SgTinyBackup
         return unless defined?(Rails)
 
         db_config = File.open(Rails.root.join("config", "database.yml"), "r") do |f|
-          YAML.safe_load(f, permitted_classes: [], permitted_symbols: [], aliases: true)
+          Utils.load_yaml_with_erb(f)
         end
-        db_config = resolve_erb(db_config)
         db_config[Rails.env]
       end
     end
