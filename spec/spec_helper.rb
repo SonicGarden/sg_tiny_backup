@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "ostruct"
 require "simplecov"
 require "sg_tiny_backup"
 require "debug"
