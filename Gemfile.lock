@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sg_tiny_backup (0.10.0)
+    sg_tiny_backup (1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -161,7 +161,7 @@ CHECKSUMS
   rubocop-rake (0.7.1) sha256=3797f2b6810c3e9df7376c26d5f44f3475eda59eb1adc38e6f62ecf027cbae4d
   rubocop-rspec (3.9.0) sha256=8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  sg_tiny_backup (0.10.0)
+  sg_tiny_backup (1.0.0)
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
   simplecov-lcov (0.9.0) sha256=7a77a31e200a595ed4b0249493056efd0c920601f53d2ef135ca34ee796346cd
