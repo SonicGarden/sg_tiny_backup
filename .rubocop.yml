@@ -4,7 +4,7 @@ require:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.2
 
 Layout/LineLength:
   Max: 150
@@ -64,4 +64,7 @@ RSpec/ExampleLength:
   Max: 100
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ReceiveMessages:
   Enabled: false

@@ -20,7 +20,7 @@ module SgTinyBackup
       @pipeline_builder = pipeline_builder
     end
 
-    def run
+    def run # rubocop:disable Naming/PredicateMethod
       pipeline.run
       handle_warning(pipeline.warning_message)
       handle_error(pipeline.error_message) if pipeline.failed?

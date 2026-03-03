@@ -19,7 +19,7 @@ module SgTinyBackup
       message << "\n--- Inner error ---\n"
       message << "#{inner_class_name}: " unless inner_message.start_with?(inner_class_name)
       message << inner_message
-      super message
+      super(message)
     end
   end
 end

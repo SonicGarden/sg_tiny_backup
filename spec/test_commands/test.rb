@@ -13,8 +13,8 @@ error = option["stderr"]
 
 if option["read_stdin"]
   input = STDIN.read
-  puts "#{name}: got: #{input}"
+  puts "#{name}: got: #{input}" # rubocop:disable RSpec/Output
 end
-puts output if output
+puts output if output # rubocop:disable RSpec/Output
 warn error if error
 exit exit_code
