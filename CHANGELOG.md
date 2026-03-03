@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- Add gzip compression level option
+- Fix bug in Gzip command where level option was not appended correctly
+
 ## [0.10.0] - 2024-03-18
 
 - Fix loading YAML with ERB

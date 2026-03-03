@@ -27,6 +27,40 @@ RSpec.describe SgTinyBackup::Config do
       expect(config.encryption_key).to eq "MY_ENCRYPTION_KEY"
     end
 
+    it "reads gzip config" do
+      yaml = <<~YAML
+        ---
+        s3:
+          bucket: my_bucket
+          prefix: my_prefix
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+        pg_dump:
+          extra_options: -xc --if-exists --encoding=utf8
+        gzip:
+          level: 1
+        encryption_key: MY_ENCRYPTION_KEY
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      expect(config.gzip).to eq({ "level" => 1 })
+    end
+
+    it "defaults gzip to empty hash when not specified" do
+      yaml = <<~YAML
+        ---
+        s3:
+          bucket: my_bucket
+          prefix: my_prefix
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+        encryption_key: MY_ENCRYPTION_KEY
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      expect(config.gzip).to eq({})
+    end
+
     it "reads an config file with erb" do
       yaml = <<~YAML
         ---

@@ -12,7 +12,7 @@ module SgTinyBackup
 
       def command
         parts = ["gzip"]
-        parts = "-#{@level}" if @level
+        parts << "-#{@level}" if @level
         parts.join(" ")
       end
     end

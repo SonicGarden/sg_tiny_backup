@@ -11,16 +11,18 @@ module SgTinyBackup
     KEY_LOG = "log"
     KEY_FILES = "files"
     KEY_OPTIONAL_FILES = "optional_files"
+    KEY_GZIP = "gzip"
 
-    attr_reader :s3, :encryption_key, :pg_dump, :mysqldump, :db
+    attr_reader :s3, :encryption_key, :pg_dump, :mysqldump, :db, :gzip
 
-    def initialize(s3:, encryption_key:, pg_dump: nil, mysqldump: nil, db: nil, log: nil) # rubocop:disable Metrics/ParameterLists
+    def initialize(s3:, encryption_key:, pg_dump: nil, mysqldump: nil, db: nil, log: nil, gzip: nil) # rubocop:disable Metrics/ParameterLists
       @s3 = s3
       @encryption_key = encryption_key
       @pg_dump = pg_dump || {}
       @mysqldump = mysqldump
       @db = db || self.class.rails_db_config
       @log = log || {}
+      @gzip = gzip || {}
     end
 
     def log_file_paths
@@ -40,7 +42,8 @@ module SgTinyBackup
           db: yaml[KEY_DB],
           pg_dump: yaml[KEY_PG_DUMP],
           mysqldump: yaml[KEY_MYSQLDUMP],
-          log: yaml[KEY_LOG]
+          log: yaml[KEY_LOG],
+          gzip: yaml[KEY_GZIP]
         )
       end
 
