@@ -5,8 +5,8 @@ require "fileutils"
 RSpec.describe "Backup database" do # rubocop:disable RSpec/MultipleMemoizedHelpers
   let(:tmpdir) { "tmp/mysql_dump" }
   let(:yaml) do
-    YAML.safe_load(
-      File.read("config/database.yml"),
+    YAML.safe_load_file(
+      "config/database.yml",
       permitted_classes: [],
       permitted_symbols: [],
       aliases: true

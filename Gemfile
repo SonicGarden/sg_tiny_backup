@@ -17,4 +17,7 @@ gem "simplecov"
 gem "simplecov-lcov"
 
 gem "debug"
-gem "solargraph"
+
+# ruby 4.0 bundled gems
+gem "logger"
+gem "ostruct"

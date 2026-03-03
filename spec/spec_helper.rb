@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require "ostruct"
 require "simplecov"
 require "sg_tiny_backup"
 require "debug"
 
-Dir[File.expand_path("support/**/*.rb", __dir__)].sort.each { |f| require f }
+Dir[File.expand_path("support/**/*.rb", __dir__)].each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

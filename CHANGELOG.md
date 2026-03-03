@@ -1,6 +1,15 @@
 ## [Unreleased]
 
+### Breaking changes
+
+- Drop support for Ruby 3.1 and below
+
+### Features
+
 - Add gzip compression level option
+
+### Fixes
+
 - Fix bug in Gzip command where level option was not appended correctly
 
 ## [0.10.0] - 2024-03-18
