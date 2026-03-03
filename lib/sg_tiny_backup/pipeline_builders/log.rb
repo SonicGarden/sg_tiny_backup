@@ -21,7 +21,7 @@ module SgTinyBackup
         output_path = base_filename if local?
         pl = Pipeline.new(output_path: output_path)
         pl << Commands::Tar.new(paths: @config.log_file_paths, optional_paths: @config.optional_log_file_paths)
-        pl << Commands::Gzip.new
+        pl << Commands::Gzip.new(level: @config.gzip["level"])
         pl << aws_cli_command unless local?
         pl
       end
