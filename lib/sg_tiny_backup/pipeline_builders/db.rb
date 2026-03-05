@@ -13,7 +13,7 @@ module SgTinyBackup
           basename: basename,
           local: local,
           s3_config: config.s3["db"],
-          extension: "sql.gz.enc"
+          extension: config.compression["method"] == "zstd" ? "sql.zst.enc" : "sql.gz.enc"
         )
       end
 
@@ -21,13 +21,23 @@ module SgTinyBackup
         output_path = base_filename if local?
         pl = Pipeline.new(output_path: output_path)
         pl << db_dump_command
-        pl << Commands::Gzip.new(level: @config.gzip["level"])
+        pl << compression_command
         pl << Commands::Openssl.new(password: @config.encryption_key)
         pl << aws_cli_command unless local?
         pl
       end
 
       private
+
+      def compression_command
+        level = @config.compression["level"]
+        case @config.compression["method"]
+        when "zstd"
+          Commands::Zstd.new(level: level)
+        else
+          Commands::Gzip.new(level: level)
+        end
+      end
 
       def db_dump_command
         db_config = @config.db

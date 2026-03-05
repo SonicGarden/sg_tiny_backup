@@ -32,8 +32,9 @@ pg_dump:
   extra_options: -xc --if-exists --encoding=utf8
 mysqldump:
   extra_options: --single-transaction --quick --hex-blob
-# gzip:
-#   level: 6  # 1 (fastest) to 9 (best compression), default: 6
+# compression:
+#   method: gzip  # gzip (default) or zstd
+#   level: 6      # gzip: 1-9, zstd: 1-22
 # The following settings is not required since database config can be loaded from config/database.yml in typical rails application.
 # db:
 #   adapter: postgresql
