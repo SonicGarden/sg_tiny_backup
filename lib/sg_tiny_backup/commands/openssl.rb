@@ -15,7 +15,7 @@ module SgTinyBackup
       end
 
       def command
-        parts = ["openssl enc -#{CIPHER} -pbkdf2 -iter #{ITER}"]
+        parts = ["openssl enc -#{CIPHER} -pbkdf2 -iter #{ITER} -md sha256"]
         parts << "-pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
         parts << "-out #{@filename}" if @filename
         parts.join(" ")
@@ -29,7 +29,7 @@ module SgTinyBackup
 
       class << self
         def decryption_command
-          parts = ["openssl enc -d -#{CIPHER} -pbkdf2 -iter #{ITER}"]
+          parts = ["openssl enc -d -#{CIPHER} -pbkdf2 -iter #{ITER} -md sha256"]
           parts << "-pass pass:ENCRYPTION_KEY"
           parts << "-in INPUTFILE -out OUTPUTFILE"
           parts.join(" ")

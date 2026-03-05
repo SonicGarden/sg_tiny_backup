@@ -38,7 +38,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
 
       expect(runner.piped_command).to eq commands.join(" | ")
@@ -74,7 +74,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip -1"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
     end
 
@@ -107,7 +107,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "zstd -c -3"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.zst.enc"
 
       expect(runner.s3_destination_url).to eq "s3://my_bucket/backup/database_01234567.sql.zst.enc"
@@ -140,7 +140,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "mysqldump --single-transaction --quick --hex-blob --user=root --host=localhost --port=13306 my_database"
       expect(commands[1]).to eq "gzip"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
 
       expect(runner.piped_command).to eq commands.join(" | ")
