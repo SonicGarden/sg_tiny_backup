@@ -38,7 +38,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
 
       expect(runner.piped_command).to eq commands.join(" | ")
@@ -74,8 +74,44 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
       expect(commands[1]).to eq "gzip -1"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
+    end
+
+    it "generates postgresql database backup command with zstd" do
+      yaml = <<~YAML
+        s3:
+          db:
+            bucket: my_bucket
+            prefix: backup/database
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+            expected_upload_size: 100000000000
+        pg_dump:
+          extra_options: -xc --if-exists --encoding=utf8
+        compression:
+          method: zstd
+          level: 3
+        encryption_key: MY_ENCRYPTION_KEY
+        db:
+          adapter: postgresql
+          database: my_database
+          host: localhost
+          port: 15432
+          username: postgres
+          password: MY_DB_PASSWORD
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      runner = SgTinyBackup::Runner.new(config: config, basename: "01234567")
+      commands = runner.plain_commands
+      expect(commands[0]).to eq "pg_dump -xc --if-exists --encoding=utf8 --username=postgres --host=localhost --port=15432 my_database"
+      expect(commands[1]).to eq "zstd -c -3"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.zst.enc"
+
+      expect(runner.s3_destination_url).to eq "s3://my_bucket/backup/database_01234567.sql.zst.enc"
+      expect(runner.base_filename).to eq "01234567.sql.zst.enc"
     end
 
     it "generates mysql database backup command" do
@@ -104,7 +140,7 @@ RSpec.describe SgTinyBackup::Runner do
       commands = runner.plain_commands
       expect(commands[0]).to eq "mysqldump --single-transaction --quick --hex-blob --user=root --host=localhost --port=13306 my_database"
       expect(commands[1]).to eq "gzip"
-      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
+      expect(commands[2]).to eq "openssl enc -aes-256-cbc -pbkdf2 -iter 10000 -md sha256 -pass env:SG_TINY_BACKUP_ENCRYPTION_KEY"
       expect(commands[3]).to eq "aws s3 cp --expected-size 100000000000 - s3://my_bucket/backup/database_01234567.sql.gz.enc"
 
       expect(runner.piped_command).to eq commands.join(" | ")
@@ -133,6 +169,32 @@ RSpec.describe SgTinyBackup::Runner do
       expect(commands[0]).to eq "tar -c tmp/log/production.log tmp/log/production.log.1"
       expect(commands[1]).to eq "gzip"
       expect(commands[2]).to eq "aws s3 cp - s3://my_bucket/backup/log_01234567.tar.gz"
+    end
+
+    it "generates log backup command with zstd" do
+      yaml = <<~YAML
+        s3:
+          log:
+            bucket: my_bucket
+            prefix: backup/log
+            access_key_id: MY_ACCESS_KEY_ID
+            secret_access_key: MY_SECRET_ACCESS_KEY
+        compression:
+          method: zstd
+          level: 3
+        log:
+          files:
+            - tmp/log/production.log
+          optional_files:
+            - tmp/log/production.log.1
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      runner = SgTinyBackup::Runner.new(config: config, target: "log", basename: "01234567")
+      commands = runner.plain_commands
+      expect(commands[0]).to eq "tar -c tmp/log/production.log tmp/log/production.log.1"
+      expect(commands[1]).to eq "zstd -c -3"
+      expect(commands[2]).to eq "aws s3 cp - s3://my_bucket/backup/log_01234567.tar.zst"
     end
 
     it "generates log backup command with gzip level" do

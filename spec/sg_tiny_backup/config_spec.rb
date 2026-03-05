@@ -27,7 +27,7 @@ RSpec.describe SgTinyBackup::Config do
       expect(config.encryption_key).to eq "MY_ENCRYPTION_KEY"
     end
 
-    it "reads gzip config" do
+    it "reads gzip config (backward compatibility)" do
       yaml = <<~YAML
         ---
         s3:
@@ -44,6 +44,58 @@ RSpec.describe SgTinyBackup::Config do
 
       config = SgTinyBackup::Config.read(StringIO.new(yaml))
       expect(config.gzip).to eq({ "level" => 1 })
+      expect(config.compression).to eq({ "method" => "gzip", "level" => 1 })
+    end
+
+    it "reads compression config with gzip" do
+      yaml = <<~YAML
+        ---
+        s3:
+          bucket: my_bucket
+          prefix: my_prefix
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+        compression:
+          method: gzip
+          level: 6
+        encryption_key: MY_ENCRYPTION_KEY
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      expect(config.compression).to eq({ "method" => "gzip", "level" => 6 })
+    end
+
+    it "reads compression config with zstd" do
+      yaml = <<~YAML
+        ---
+        s3:
+          bucket: my_bucket
+          prefix: my_prefix
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+        compression:
+          method: zstd
+          level: 3
+        encryption_key: MY_ENCRYPTION_KEY
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      expect(config.compression).to eq({ "method" => "zstd", "level" => 3 })
+    end
+
+    it "defaults compression to gzip when not specified" do
+      yaml = <<~YAML
+        ---
+        s3:
+          bucket: my_bucket
+          prefix: my_prefix
+          access_key_id: MY_ACCESS_KEY_ID
+          secret_access_key: MY_SECRET_ACCESS_KEY
+        encryption_key: MY_ENCRYPTION_KEY
+      YAML
+
+      config = SgTinyBackup::Config.read(StringIO.new(yaml))
+      expect(config.compression).to eq({ "method" => "gzip" })
     end
 
     it "defaults gzip to empty hash when not specified" do

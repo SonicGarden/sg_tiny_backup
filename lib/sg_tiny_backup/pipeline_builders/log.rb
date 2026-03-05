@@ -13,7 +13,7 @@ module SgTinyBackup
           basename: basename,
           local: local,
           s3_config: config.s3["log"],
-          extension: "tar.gz"
+          extension: config.compression["method"] == "zstd" ? "tar.zst" : "tar.gz"
         )
       end
 
@@ -21,15 +21,21 @@ module SgTinyBackup
         output_path = base_filename if local?
         pl = Pipeline.new(output_path: output_path)
         pl << Commands::Tar.new(paths: @config.log_file_paths, optional_paths: @config.optional_log_file_paths)
-        pl << Commands::Gzip.new(level: @config.gzip["level"])
+        pl << compression_command
         pl << aws_cli_command unless local?
         pl
       end
 
       private
 
-      def extension
-        "tar.gz"
+      def compression_command
+        level = @config.compression["level"]
+        case @config.compression["method"]
+        when "zstd"
+          Commands::Zstd.new(level: level)
+        else
+          Commands::Gzip.new(level: level)
+        end
       end
     end
   end
