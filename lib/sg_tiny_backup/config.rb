@@ -25,13 +25,14 @@ module SgTinyBackup
       @db = db || self.class.rails_db_config
       @log = log || {}
       @gzip = gzip || {}
-      @compression = if compression
-        compression
-      elsif gzip
-        { "method" => "gzip", "level" => gzip["level"] }
-      else
-        COMPRESSION_DEFAULT
-      end
+      @compression =
+        if compression
+          compression
+        elsif gzip
+          { "method" => "gzip", "level" => gzip["level"] }
+        else
+          COMPRESSION_DEFAULT
+        end
     end
 
     def log_file_paths
