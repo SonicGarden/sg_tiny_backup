@@ -1,3 +1,9 @@
+## [1.1.0] - 2026-03-09
+
+### Features
+
+- Add zstd compression support
+
 ## [1.0.0] - 2026-03-03
 
 ### Breaking changes
