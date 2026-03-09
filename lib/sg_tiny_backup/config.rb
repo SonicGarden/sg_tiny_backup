@@ -29,6 +29,7 @@ module SgTinyBackup
         if compression
           compression
         elsif gzip
+          SgTinyBackup.logger.warn("The 'gzip' configuration is deprecated. Please use 'compression' instead.")
           { "method" => "gzip", "level" => gzip["level"] }
         else
           COMPRESSION_DEFAULT
