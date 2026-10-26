@@ -1,3 +1,9 @@
+## [1.2.0] - 2026-10-26
+
+### Breaking changes
+
+- Drop support for Ruby 3.2
+
 ## [1.1.0] - 2026-03-09
 
 ### Features
